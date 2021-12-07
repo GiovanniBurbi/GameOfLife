@@ -3,7 +3,10 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel, QWidget, QFrame
 from qimage2ndarray import array2qimage
 
-""" Constants for geometry of the board widget"""
+""" 
+Constants for geometry and alignment of the board widget.
+Custom for this project specific GUI
+"""
 MARGIN_Y = 0
 MARGIN_X = 11
 PIXEL_WIDTH = 650
@@ -19,12 +22,9 @@ class BoardWidget(QWidget):
     that can be show in the graphic interface.
     """
 
-    def __init__(self, model):
+    def __init__(self, board):
         QWidget.__init__(self)
-        self._model = model
-        self._board_width, self._board_length = model.get_board_dimension()
-
-        self.array_board_conversion(model.board)
+        self.array_board_conversion(board)
 
     def array_board_conversion(self, board):
         """
