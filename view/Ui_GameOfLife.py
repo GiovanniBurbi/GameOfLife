@@ -70,7 +70,7 @@ class Ui_GameOfLife(object):
         self.verticalLayout.addWidget(self.infoLabel)
         self.BoardBackgroundLayout = QtWidgets.QGridLayout()
         self.BoardBackgroundLayout.setObjectName("BoardBackgroundLayout")
-        spacerItem = QtWidgets.QSpacerItem(67, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(75, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.BoardBackgroundLayout.addItem(spacerItem, 0, 0, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(67, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.BoardBackgroundLayout.addItem(spacerItem1, 0, 2, 1, 1)
@@ -182,3 +182,4 @@ class Ui_GameOfLife(object):
         self.clearButton.setText(_translate("GameOfLife", "Clear"))
         self.scaleLabel.setText(_translate("GameOfLife", "Scale"))
         self.framerateLabel.setText(_translate("GameOfLife", "Framerate"))
+
