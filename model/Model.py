@@ -21,10 +21,10 @@ class Model(object):
 
     """
 
-    def __init__(self, width=27, height=44):
+    def __init__(self, height=27, width=44):
         self._width = width
         self._height = height
-        self._board = np.full((width, height, 3), 255)
+        self._board = np.full((height, width, 3), 255)
         self._controller = None
 
     def get_board_dimension(self):
