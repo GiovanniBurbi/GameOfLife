@@ -24,14 +24,16 @@ class BoardWidget(QWidget):
         board : Numpy array, state of the board
         board_label : Conversion of the board array in a Qt graphic element.
         view : Reference to an instance of the view.
-                Board widget is part of the view and delegates to it
-                the user's interaction with the graphic board.
+               Board widget is part of the view and delegates to it
+               the user's interaction with the graphic board.
+        mouse_pos : keep track of the mouse position in the board
     """
 
     def __init__(self, board, view):
         QWidget.__init__(self)
         self._board = board
         self._view = view
+        self._mouse_pos = None
         self._board_label = QLabel(self)
         self._board_label = matrix_board_conversion(self._board_label, board, PIXEL_WIDTH, PIXEL_HEIGHT)
         # Creates the outline of the label and soften its shadow
@@ -53,6 +55,8 @@ class BoardWidget(QWidget):
         pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
         # check that position (x, y) is != outline
         if (lambda y, x: True if y != board_height and x != board_width else False)(pos_y, pos_x):
+            # save current mouse position
+            self._mouse_pos = pos_x, pos_y
             if event.button() == Qt.LeftButton:
                 self._view.set_cell_alive(pos_x, pos_y)
             elif event.button() == Qt.RightButton:
@@ -69,8 +73,11 @@ class BoardWidget(QWidget):
         # Convert the widget coordinates into board-matrix indexes
         pos_x = int((board_width * event.x()) / PIXEL_WIDTH)
         pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
-        # check that the position (x,y) is inside the board
-        if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x):
+        # check that the position (x,y) is inside the board and is changed
+        if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x) \
+                and (pos_x, pos_y) != self._mouse_pos:
+            # save current mouse position
+            self._mouse_pos = pos_x, pos_y
             if event.buttons() == Qt.LeftButton:
                 self._view.set_cell_alive(pos_x, pos_y)
             elif event.buttons() == Qt.RightButton:
