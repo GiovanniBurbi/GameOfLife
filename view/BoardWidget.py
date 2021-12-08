@@ -41,7 +41,8 @@ class BoardWidget(QWidget):
         self._board_label.show()
 
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
-        """ Logic for the user's click interaction with the board.
+        """
+        Logic for the user's click interaction with the board.
         Delegates to the View the command to change cell's state
         Left click ---> set cell alive
         Right click ---> set cell dead
@@ -55,6 +56,24 @@ class BoardWidget(QWidget):
             if event.button() == Qt.LeftButton:
                 self._view.set_cell_alive(pos_x, pos_y)
             elif event.button() == Qt.RightButton:
+                self._view.set_cell_dead(pos_x, pos_y)
+
+    def mouseMoveEvent(self, event: QtGui.QMouseEvent) -> None:
+        """
+        Logic for the user's mouse movement interaction while inside the board.
+        Delegates to the View the command to change cell's state
+        Left click ---> draw alive cells
+        Right click ---> kill alive cells
+        """
+        board_height, board_width = self._board.shape[:2]
+        # Convert the widget coordinates into board-matrix indexes
+        pos_x = int((board_width * event.x()) / PIXEL_WIDTH)
+        pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
+        # check that the position (x,y) is inside the board
+        if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x):
+            if event.buttons() == Qt.LeftButton:
+                self._view.set_cell_alive(pos_x, pos_y)
+            elif event.buttons() == Qt.RightButton:
                 self._view.set_cell_dead(pos_x, pos_y)
 
     def update_board_state(self, board):

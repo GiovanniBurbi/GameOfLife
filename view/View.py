@@ -55,4 +55,4 @@ class View(QMainWindow):
     def change_info_label(self):
         """ Method to change info label"""
         self._info_label_changed = True
-        self._ui.infoLabel.setText("Left click to set alive cells, Right click to set dead cells")
+        self._ui.infoLabel.setText("Left click to set alive cells, Right click to kill alive cells")
