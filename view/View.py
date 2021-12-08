@@ -21,6 +21,7 @@ class View(QMainWindow):
         self._ui.setupUi(self)
         self._board_widget = None
         self._controller = None
+        self._info_label_changed = False
 
     @property
     def ui(self):
@@ -47,3 +48,8 @@ class View(QMainWindow):
     def set_cell_dead(self, x, y):
         """ Delegates to the controller the change in the state of the cell """
         self._controller.state_cell_to_dead(x, y)
+
+    def change_info_label(self):
+        if not self._info_label_changed:
+            self._info_label_changed = True
+            self._ui.infoLabel.setText("Left click to set alive cells, Right click to set dead cells")
