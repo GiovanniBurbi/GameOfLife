@@ -1,14 +1,12 @@
-from PyQt5.QtCore import QRect
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QLabel, QWidget, QFrame
-from qimage2ndarray import array2qimage
+
+from view.utilities import matrix_board_conversion
 
 """ 
-Constants for geometry and alignment of the board widget.
+Constants for pixel dimensions of the board widget.
 Custom for this project specific GUI
 """
-MARGIN_Y = 0
-MARGIN_X = 11
 PIXEL_WIDTH = 650
 PIXEL_HEIGHT = 400
 
@@ -20,27 +18,41 @@ class BoardWidget(QWidget):
 
     It is responsible to convert the board state of the model in an object
     that can be show in the graphic interface.
+
+    Attributes:
+        board : Numpy array, state of the board
+        board_label : Conversion of the board array in a Qt graphic element.
+        view : Reference to an instance of the view.
+                Board widget is part of the view and delegates to it
+                the user's interaction with the graphic board.
     """
 
-    def __init__(self, board):
+    def __init__(self, board, view):
         QWidget.__init__(self)
-        self.array_board_conversion(board)
+        self._board = board
+        self._view = view
+        self._board_label = QLabel(self)
+        self._board_label = matrix_board_conversion(self._board_label, board, PIXEL_WIDTH, PIXEL_HEIGHT)
+        # Creates the outline of the label and soften its shadow
+        self._board_label.setFrameShape(QFrame.Box)
+        self._board_label.setFrameShadow(QFrame.Sunken)
 
-    def array_board_conversion(self, board):
-        """
-        Method for convert an numpy array to a label for the GUI.
-        """
-        # Convert the np array in a QImage with RGB channel
-        qimage = array2qimage(board)
-        # Converts the Qimage in a Pixmap that can be used as a paint device.
-        pixmap = QPixmap.fromImage(qimage)
-        # Scale the pixmap to the pixel dimensions of the GUI's BoardLayout
-        pixmap = pixmap.scaled(PIXEL_WIDTH, PIXEL_HEIGHT)
-        label = QLabel(self)
-        label.setPixmap(pixmap)
-        # To align the label in the center and set the form.
-        label.setGeometry(QRect(MARGIN_X, MARGIN_Y, PIXEL_WIDTH, PIXEL_HEIGHT))
-        # To create the outline of the rectangle and soften its shadow
-        label.setFrameShape(QFrame.Box)
-        label.setFrameShadow(QFrame.Sunken)
-        label.show()
+        self._board_label.show()
+
+    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+        """ Logic for the user's click interaction with the board.
+        Delegates to the View the command to change cell's state """
+        pos_x = event.x()
+        board_height, board_width = self._board.shape[:2]
+        pos_x = int((board_width * pos_x) / PIXEL_WIDTH)
+        pos_y = event.y()
+        pos_y = int((board_height * pos_y) / PIXEL_HEIGHT)
+        if self.underMouse() and \
+                (pos_y != board_height
+                 and pos_x != board_width):
+            self._view.change_cell(pos_x, pos_y)
+
+    def update_board_state(self, board):
+        """ Updates the graphic board with the new board passed
+        as a numpy array """
+        self._board_label = matrix_board_conversion(self._board_label, board, PIXEL_WIDTH, PIXEL_HEIGHT)
