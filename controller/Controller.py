@@ -13,3 +13,13 @@ class Controller(object):
         """ Calls view's add board widget method
          passing the model's board"""
         self._view.add_board_widget(self._model.board)
+
+    def change_state_cell(self, x, y):
+        """ Delegates to the model the command to change a cell state
+        passing its 2D coordinates."""
+        self._model.change_state(x, y)
+
+    def update_board(self, board):
+        """ Delegates to the view the update of the board state
+        passing the updated board as numpy array"""
+        self._view.update_view(board)
