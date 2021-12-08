@@ -42,14 +42,17 @@ class View(QMainWindow):
         self._board_widget.update_board_state(board)
 
     def set_cell_alive(self, x, y):
-        """ Delegates to the controller the change in the state of the cell """
+        """ Delegates to the controller the change in the state of the cell
+         The first time that the user set a cell alive, changes the info label"""
         self._controller.state_cell_to_alive(x, y)
+        if not self._info_label_changed:
+            self.change_info_label()
 
     def set_cell_dead(self, x, y):
         """ Delegates to the controller the change in the state of the cell """
         self._controller.state_cell_to_dead(x, y)
 
     def change_info_label(self):
-        if not self._info_label_changed:
-            self._info_label_changed = True
-            self._ui.infoLabel.setText("Left click to set alive cells, Right click to set dead cells")
+        """ Method to change info label"""
+        self._info_label_changed = True
+        self._ui.infoLabel.setText("Left click to set alive cells, Right click to set dead cells")

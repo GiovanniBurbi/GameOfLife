@@ -54,7 +54,6 @@ class BoardWidget(QWidget):
         if (lambda y, x: True if y != board_height and x != board_width else False)(pos_y, pos_x):
             if event.button() == Qt.LeftButton:
                 self._view.set_cell_alive(pos_x, pos_y)
-                self._view.change_info_label()
             elif event.button() == Qt.RightButton:
                 self._view.set_cell_dead(pos_x, pos_y)
 
