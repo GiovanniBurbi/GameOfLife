@@ -12,5 +12,7 @@ if __name__ == '__main__':
     window = View()
     controller = Controller(model, window)
     controller.add_board_widget_to_ui()
+    window.set_controller(controller)
+    model.set_controller(controller)
     window.show()
     sys.exit(app.exec_())
