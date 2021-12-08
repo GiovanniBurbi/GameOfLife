@@ -14,10 +14,15 @@ class Controller(object):
          passing the model's board"""
         self._view.add_board_widget(self._model.board)
 
-    def change_state_cell(self, x, y):
+    def state_cell_to_alive(self, x, y):
         """ Delegates to the model the command to change a cell state
         passing its 2D coordinates."""
-        self._model.change_state(x, y)
+        self._model.alive_cell(x, y)
+
+    def state_cell_to_dead(self, x, y):
+        """ Delegates to the model the command to change a cell state
+        passing its 2D coordinates."""
+        self._model.dead_cell(x, y)
 
     def update_board(self, board):
         """ Delegates to the view the update of the board state

@@ -40,6 +40,10 @@ class View(QMainWindow):
         """ Delegates to the board widget the update of the board graphic """
         self._board_widget.update_board_state(board)
 
-    def change_cell(self, x, y):
+    def set_cell_alive(self, x, y):
         """ Delegates to the controller the change in the state of the cell """
-        self._controller.change_state_cell(x, y)
+        self._controller.state_cell_to_alive(x, y)
+
+    def set_cell_dead(self, x, y):
+        """ Delegates to the controller the change in the state of the cell """
+        self._controller.state_cell_to_dead(x, y)

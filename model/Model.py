@@ -38,14 +38,22 @@ class Model(object):
     def set_controller(self, controller):
         self._controller = controller
 
-    def change_state(self, x, y):
-        """ Method to change state/color of a cell in the board.
-        To check the actual state/color it sums the rgb values.
+    def alive_cell(self, x, y):
+        """ Method to set alive a cell in the board.
+        To check the actual state it sums the rgb values of the cell.
         Then delegates to the controller the visual update of the board. """
         is_white_cell = \
             True if sum(self._board[y, x, 0:3]) == sum(WHITE) else False
         if is_white_cell:
             self._board[y, x, 0:3] = LIGHT_BLUE
-        else:
+            self._controller.update_board(self._board)
+
+    def dead_cell(self, x, y):
+        """ Method to set dead a cell in the board.
+        To check the actual state it sums the rgb values of the cell.
+        Then delegates to the controller the visual update of the board. """
+        is_light_blue_cell = \
+            True if sum(self._board[y, x, 0:3]) == sum(LIGHT_BLUE) else False
+        if is_light_blue_cell:
             self._board[y, x, 0:3] = WHITE
-        self._controller.update_board(self._board)
+            self._controller.update_board(self._board)

@@ -1,4 +1,5 @@
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QWidget, QFrame
 
 from view.utilities import matrix_board_conversion
@@ -41,16 +42,20 @@ class BoardWidget(QWidget):
 
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
         """ Logic for the user's click interaction with the board.
-        Delegates to the View the command to change cell's state """
-        pos_x = event.x()
+        Delegates to the View the command to change cell's state
+        Left click ---> set cell alive
+        Right click ---> set cell dead
+        """
         board_height, board_width = self._board.shape[:2]
-        pos_x = int((board_width * pos_x) / PIXEL_WIDTH)
-        pos_y = event.y()
-        pos_y = int((board_height * pos_y) / PIXEL_HEIGHT)
-        if self.underMouse() and \
-                (pos_y != board_height
-                 and pos_x != board_width):
-            self._view.change_cell(pos_x, pos_y)
+        # Convert the widget coordinates into board-matrix indexes
+        pos_x = int((board_width * event.x()) / PIXEL_WIDTH)
+        pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
+        # check that position (x, y) is != outline
+        if (lambda y, x: True if y != board_height and x != board_width else False)(pos_y, pos_x):
+            if event.button() == Qt.LeftButton:
+                self._view.set_cell_alive(pos_x, pos_y)
+            elif event.button() == Qt.RightButton:
+                self._view.set_cell_dead(pos_x, pos_y)
 
     def update_board_state(self, board):
         """ Updates the graphic board with the new board passed
