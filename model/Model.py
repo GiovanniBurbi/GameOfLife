@@ -21,7 +21,7 @@ class Model(object):
 
     """
 
-    def __init__(self, height=27, width=44):
+    def __init__(self, height=20, width=35):
         self._width = width
         self._height = height
         self._board = np.full((height, width, 3), 255)
