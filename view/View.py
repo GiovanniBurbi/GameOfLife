@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QGraphicsScene
 
 from view import BoardWidget, Ui_GameOfLife
+from view.utilities import create_grid_over_scene
 
 
 class View(QMainWindow):
@@ -29,9 +30,17 @@ class View(QMainWindow):
 
     def add_board_widget(self, board):
         """ Creates an instance of BoardWidget and adds it
-        to the BoardLayout of the user interface """
-        self._board_widget = BoardWidget(board, self)
-        self._ui.BoardLayout.addWidget(self._board_widget)
+        to the scene of graphic board int the GUI then call a method to create
+         a gray grid over it."""
+        # Retrieve pixel dimensions of the board widget
+        board_px_height, board_px_width = self._ui.graphicBoard.maximumHeight(), self._ui.graphicBoard.maximumWidth()
+        self._board_widget = BoardWidget(board, board_px_width, board_px_height, self)
+        self._ui.graphicBoard.setScene(QGraphicsScene())
+        self._ui.graphicBoard.scene().addWidget(self._board_widget)
+        # Retrieve dimensions of the matrix representation of the board
+        board_height, board_width = board.shape[:2]
+        create_grid_over_scene(board_width, board_height, board_px_width, board_px_height,
+                               self._ui.graphicBoard.scene())
 
     def set_controller(self, controller):
         """ Setter of the controller instance. """

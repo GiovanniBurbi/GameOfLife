@@ -1,15 +1,8 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QWidget, QFrame
+from PyQt5.QtWidgets import QLabel, QWidget
 
 from view.utilities import matrix_board_conversion
-
-""" 
-Constants for pixel dimensions of the board widget.
-Custom for this project specific GUI
-"""
-PIXEL_WIDTH = 650
-PIXEL_HEIGHT = 400
 
 
 class BoardWidget(QWidget):
@@ -27,20 +20,19 @@ class BoardWidget(QWidget):
                Board widget is part of the view and delegates to it
                the user's interaction with the graphic board.
         mouse_pos : keep track of the mouse position in the board
+        px_width, px_height : pixel dimensions of the widget
     """
 
-    def __init__(self, board, view):
+    def __init__(self, board, px_width, px_height, view):
         QWidget.__init__(self)
         self._board = board
+        self._px_width = px_width
+        self._px_height = px_height
         self._view = view
         self._mouse_pos = None
         self._board_label = QLabel(self)
-        self._board_label = matrix_board_conversion(self._board_label, board, PIXEL_WIDTH, PIXEL_HEIGHT)
-        # Creates the outline of the label and soften its shadow
-        self._board_label.setFrameShape(QFrame.Box)
-        self._board_label.setFrameShadow(QFrame.Sunken)
-
-        self._board_label.show()
+        # Translate matrix in pixmap and set it to the board label
+        matrix_board_conversion(self._board_label, board, px_width, px_height)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
         """
@@ -51,16 +43,15 @@ class BoardWidget(QWidget):
         """
         board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_x = int((board_width * event.x()) / PIXEL_WIDTH)
-        pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
-        # check that position (x, y) is != outline
-        if (lambda y, x: True if y != board_height and x != board_width else False)(pos_y, pos_x):
-            # save current mouse position
-            self._mouse_pos = pos_x, pos_y
-            if event.button() == Qt.LeftButton:
-                self._view.set_cell_alive(pos_x, pos_y)
-            elif event.button() == Qt.RightButton:
-                self._view.set_cell_dead(pos_x, pos_y)
+        pos_x = int((board_width * event.x()) / self._px_width)
+        pos_y = int((board_height * event.y()) / self._px_height)
+        # save current mouse position
+        self._mouse_pos = pos_x, pos_y
+        print(self._mouse_pos)
+        if event.button() == Qt.LeftButton:
+            self._view.set_cell_alive(pos_x, pos_y)
+        elif event.button() == Qt.RightButton:
+            self._view.set_cell_dead(pos_x, pos_y)
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent) -> None:
         """
@@ -71,8 +62,8 @@ class BoardWidget(QWidget):
         """
         board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_x = int((board_width * event.x()) / PIXEL_WIDTH)
-        pos_y = int((board_height * event.y()) / PIXEL_HEIGHT)
+        pos_x = int((board_width * event.x()) / self._px_width)
+        pos_y = int((board_height * event.y()) / self._px_height)
         # check that the position (x,y) is inside the board and is changed
         if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x) \
                 and (pos_x, pos_y) != self._mouse_pos:
@@ -86,4 +77,4 @@ class BoardWidget(QWidget):
     def update_board_state(self, board):
         """ Updates the graphic board with the new board passed
         as a numpy array """
-        self._board_label = matrix_board_conversion(self._board_label, board, PIXEL_WIDTH, PIXEL_HEIGHT)
+        matrix_board_conversion(self._board_label, board, self._px_width, self._px_height)
