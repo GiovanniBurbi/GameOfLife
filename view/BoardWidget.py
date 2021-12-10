@@ -47,7 +47,6 @@ class BoardWidget(QWidget):
         pos_y = int((board_height * event.y()) / self._px_height)
         # save current mouse position
         self._mouse_pos = pos_x, pos_y
-        print(self._mouse_pos)
         if event.button() == Qt.LeftButton:
             self._view.set_cell_alive(pos_x, pos_y)
         elif event.button() == Qt.RightButton:
