@@ -47,7 +47,6 @@ class Model(object):
         if is_white_cell:
             self.visible_board[pos_x, pos_y, 0:3] = LIGHT_BLUE
             self._controller.update_board(self.visible_board)
-        print(self.visible_board.shape[0])
 
     def dead_cell(self, x, y):
         """ Method to set dead a cell in the board.
@@ -55,9 +54,9 @@ class Model(object):
         Then delegates to the controller the visual update of the board. """
         pos_x, pos_y = self.adjust_coords(x, y)
         is_light_blue_cell = \
-            True if sum(self._board[pos_x, pos_y, 0:3]) == sum(LIGHT_BLUE) else False
+            True if sum(self.visible_board[pos_x, pos_y, 0:3]) == sum(LIGHT_BLUE) else False
         if is_light_blue_cell:
-            self._board[pos_x, pos_y, 0:3] = WHITE
+            self.visible_board[pos_x, pos_y, 0:3] = WHITE
             self._controller.update_board(self.visible_board)
 
     def resize(self, value):
