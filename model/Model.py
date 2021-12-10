@@ -18,22 +18,21 @@ class Model(object):
                 Initial state is a white board, all cell are dead.
         controller : reference to an instance of the controller.
                      Model delegates to this object any change to the board state.
-
+        ratio : matrix board ratio
+        visible_board : submatrix of the board that is currently visible
     """
 
-    def __init__(self, height=20, width=35):
+    def __init__(self, height=30, width=60):
         self._width = width
         self._height = height
+        self._ratio = int(width / height)
         self._board = np.full((height, width, 3), 255)
+        self._visible_board = self._board
         self._controller = None
 
-    def get_board_dimension(self):
-        """ Return the width and length of the board """
-        return self._width, self._height
-
     @property
-    def board(self):
-        return self._board
+    def visible_board(self):
+        return self._visible_board
 
     def set_controller(self, controller):
         self._controller = controller
@@ -57,3 +56,14 @@ class Model(object):
         if is_light_blue_cell:
             self._board[y, x, 0:3] = WHITE
             self._controller.update_board(self._board)
+
+    def resize(self, value):
+        """ Method that change the visible matrix according to a value """
+        self._visible_board = self.get_submatrix(value)
+        self._controller.update_board(self._visible_board)
+
+    def get_submatrix(self, scale):
+        """ Method to retrieve a centered submatrix of the board """
+        height_shift = scale
+        width_shift = scale * self._ratio
+        return self._board[height_shift:self._height - height_shift, width_shift:self._width - width_shift]
