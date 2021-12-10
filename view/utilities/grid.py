@@ -20,3 +20,10 @@ def create_grid_over_scene(width, height, px_width, px_height, scene):
         grid.addToGroup(line)
 
     scene.addItem(grid)
+    return grid
+
+
+def resize_grid_over_scene(width, height, px_width, px_height, scene, grid):
+    """ Method to replace the grid with a new one with different dimensions """
+    scene.removeItem(grid)
+    return create_grid_over_scene(width, height, px_width, px_height, scene)

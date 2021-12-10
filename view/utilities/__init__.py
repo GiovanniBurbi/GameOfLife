@@ -1,2 +1,2 @@
-from .grid import create_grid_over_scene
+from .grid import create_grid_over_scene, resize_grid_over_scene
 from .matrix_board_conversion import matrix_board_conversion
