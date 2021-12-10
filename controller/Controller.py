@@ -12,7 +12,7 @@ class Controller(object):
     def add_board_widget_to_ui(self):
         """ Calls view's add board widget method
          passing the model's board"""
-        self._view.add_board_widget(self._model.board)
+        self._view.add_board_widget(self._model.visible_board)
 
     def state_cell_to_alive(self, x, y):
         """ Delegates to the model the command to change a cell state
@@ -28,3 +28,6 @@ class Controller(object):
         """ Delegates to the view the update of the board state
         passing the updated board as numpy array"""
         self._view.update_view(board)
+
+    def change_scale(self, value):
+        self._model.resize(value)
