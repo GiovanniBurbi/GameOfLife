@@ -43,8 +43,8 @@ class BoardWidget(QWidget):
         """
         board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_x = int((board_width * event.x()) / self._px_width)
-        pos_y = int((board_height * event.y()) / self._px_height)
+        pos_y = board_height * event.y() / self._px_height
+        pos_x = board_width * event.x() / self._px_width
         # save current mouse position
         self._mouse_pos = pos_x, pos_y
         if event.button() == Qt.LeftButton:
@@ -61,8 +61,8 @@ class BoardWidget(QWidget):
         """
         board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_x = int((board_width * event.x()) / self._px_width)
-        pos_y = int((board_height * event.y()) / self._px_height)
+        pos_y = board_height * event.y() / self._px_height
+        pos_x = board_width * event.x() / self._px_width
         # check that the position (x,y) is inside the board and is changed
         if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x) \
                 and (pos_x, pos_y) != self._mouse_pos:
