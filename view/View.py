@@ -14,6 +14,10 @@ class View(QMainWindow):
         board_widget : Custom widget, Graphic represent of the board.
         controller : Reference to an instance of the controller.
                      View delegates to this object any user's interaction with the GUI.
+        overlay_grid : Item group that represent the grid over the board
+        info_label_changed: flag to inform if the info label is changed
+        max_board_width, max_board_height : max dimensions of the board matrix
+        board_px_width, board_px_height : pixel dimensions of the board widget
     """
 
     def __init__(self):
