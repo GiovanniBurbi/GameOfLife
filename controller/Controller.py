@@ -30,4 +30,5 @@ class Controller(object):
         self._view.update_view(board)
 
     def change_scale(self, value):
+        """ Delegates to the model the resize of the board """
         self._model.resize(value)
