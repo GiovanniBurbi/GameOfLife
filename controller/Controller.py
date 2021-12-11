@@ -1,5 +1,10 @@
 from PyQt5.QtCore import QTimer
 
+""" Constant for amplify rate values into millisec """
+AMPLIFIER = 13
+""" Constant for the default lifetime of a single generation """
+DEFAULT_LIFETIME = 700
+
 
 class Controller(object):
     """
@@ -12,20 +17,16 @@ class Controller(object):
     Attributes:
         model : Reference to an instance of the Model.
         view : Reference to an instance of the View.
-        generation_lifetime : time between successive generations
-        timer : timer that controls the rate of evolution of the board simulation
+        generation_lifetime : current time between successive generations
     """
 
     def __init__(self, model, view):
         self._model = model
         self._view = view
-        self._generation_lifetime = 1000
-        self._timer = QTimer()
+        self._generation_lifetime = DEFAULT_LIFETIME
 
         # Register update_board method to receive the updates from the model about the board state
         model.register(self.update_board)
-        # Connect timeout signal to the model's method that generate the next evolution of the board's state.
-        self._timer.timeout.connect(self._model.next_generation)
 
     def add_board_widget_to_ui(self):
         """ Calls view's add board widget method
@@ -55,13 +56,12 @@ class Controller(object):
         """ Delegates to the model the clear of the board. """
         self._model.clear()
 
-    def start_pause_game(self, play):
-        """ Method to start and stop the timer of the game based on the boolean
-        passed as parameter. """
-        if play:
-            # emit on start simulation
-            self._timer.timeout.emit()
-            # then set the timer with the interval between successive generations.
-            self._timer.start(self._generation_lifetime)
-        else:
-            self._timer.stop()
+    def play_pause_game(self):
+        """ Recursive method that decide the timing of the board evolutions, timing based on the current lifetime """
+        if self._view.is_play_pressed:
+            self._model.next_generation()
+            QTimer.singleShot(self._generation_lifetime, self.play_pause_game)
+
+    def change_rate(self, rate):
+        """ Method that change the current lifetime based on a rate passed as parameter. """
+        self._generation_lifetime = DEFAULT_LIFETIME + (rate * AMPLIFIER)
