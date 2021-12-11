@@ -3,6 +3,10 @@ from PyQt5.QtWidgets import QMainWindow, QGraphicsScene
 from view import BoardWidget, Ui_GameOfLife
 from view.utilities import create_grid_over_scene, resize_grid_over_scene
 
+""" Info messages to show in the GUI """
+ENTRY_INFO = "Draw alive cells or Load a pattern and start the simulation"
+DRAW_INFO = "Left click to set alive cells, Right click to kill alive cells"
+
 
 class View(QMainWindow):
     """
@@ -35,10 +39,6 @@ class View(QMainWindow):
         self._max_board_width = None
         self._ratio = None
 
-    @property
-    def ui(self):
-        return self._ui
-
     def add_board_widget(self, board):
         """ Creates an instance of BoardWidget and adds it
         to the scene of graphic board into the GUI. Then call a method to create
@@ -68,16 +68,16 @@ class View(QMainWindow):
          The first time that the user set a cell alive, changes the info label"""
         self._controller.state_cell_to_alive(x, y)
         if not self._info_label_changed:
-            self.change_info_label()
+            self.change_info_label(DRAW_INFO)
+            self._info_label_changed = True
 
     def set_cell_dead(self, x, y):
         """ Delegates to the controller the change in the state of the cell """
         self._controller.state_cell_to_dead(x, y)
 
-    def change_info_label(self):
+    def change_info_label(self, msg):
         """ Method to change info label"""
-        self._info_label_changed = True
-        self._ui.infoLabel.setText("Left click to set alive cells, Right click to kill alive cells")
+        self._ui.infoLabel.setText(msg)
 
     def connect_events(self):
         """ Method to connect GUI event to the handler """
@@ -98,3 +98,5 @@ class View(QMainWindow):
     def clear_board(self):
         """ Handler of the clear command """
         self._controller.clear_board()
+        self.change_info_label(ENTRY_INFO)
+        self._info_label_changed = False
