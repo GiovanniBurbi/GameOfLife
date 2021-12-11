@@ -22,6 +22,7 @@ class View(QMainWindow):
         info_label_changed: flag to inform if the info label is changed
         max_board_width, max_board_height : max dimensions of the board matrix
         board_px_width, board_px_height : pixel dimensions of the board widget
+        simulating : flag to switch behaviour of the play button
     """
 
     def __init__(self):
@@ -38,6 +39,7 @@ class View(QMainWindow):
         self._max_board_height = None
         self._max_board_width = None
         self._ratio = None
+        self._simulating = False
 
     def add_board_widget(self, board):
         """ Creates an instance of BoardWidget and adds it
@@ -83,6 +85,7 @@ class View(QMainWindow):
         """ Method to connect GUI event to the handler """
         self._ui.zoomSlider.valueChanged.connect(self.set_scale)
         self._ui.clearButton.released.connect(self.clear_board)
+        self._ui.playPauseButton.released.connect(self.play)
 
     def set_scale(self):
         """ Handler of the board resize """
@@ -100,3 +103,16 @@ class View(QMainWindow):
         self._controller.clear_board()
         self.change_info_label(ENTRY_INFO)
         self._info_label_changed = False
+
+    def play(self):
+        """ Handler of the play command """
+        self.switch_play_pause_label()
+        self._controller.start_game()
+
+    def switch_play_pause_label(self):
+        if not self._simulating:
+            self._ui.playPauseButton.setText("Pause")
+            self._simulating = True
+        else:
+            self._ui.playPauseButton.setText("Play")
+            self._simulating = False
