@@ -82,6 +82,7 @@ class View(QMainWindow):
     def connect_events(self):
         """ Method to connect GUI event to the handler """
         self._ui.zoomSlider.valueChanged.connect(self.set_scale)
+        self._ui.clearButton.released.connect(self.clear_board)
 
     def set_scale(self):
         """ Handler of the board resize """
@@ -93,3 +94,6 @@ class View(QMainWindow):
         self._overlay_grid = resize_grid_over_scene(resized_width, resized_height, self._board_px_width,
                                                     self._board_px_height, self._ui.graphicBoard.scene(),
                                                     self._overlay_grid)
+
+    def clear_board(self):
+        self._controller.clear_board()
