@@ -29,24 +29,29 @@ class Model(Observable):
 
     @property
     def visible_board(self):
-        return self.get_submatrix(self._zoom)
+        """ Method that allows external element to get the visible board.
+        It returns a copy so that the state of the board is not modifiable from
+        outside."""
+        return np.copy(self._get_visible_board())
 
     def alive_cell(self, x, y):
         """ Method to set alive a cell in the board.
         Value 0 means that the cell is dead, value 1 the cell is alive.
         Then it publish the updated board. """
-        pos_x, pos_y = self.adjust_coords(x, y)
-        if self.visible_board[pos_x, pos_y] == 0:
-            self.visible_board[pos_x, pos_y] = 1
+        pos_x, pos_y = self._adjust_coords(x, y)
+        visible_board = self._get_visible_board()
+        if visible_board[pos_x, pos_y] == 0:
+            visible_board[pos_x, pos_y] = 1
             self.value = self.visible_board
 
     def dead_cell(self, x, y):
         """ Method to set dead a cell in the board.
         Value 0 means that the cell is dead, value 1 the cell is alive.
         Then it publish the updated board. """
-        pos_x, pos_y = self.adjust_coords(x, y)
-        if self.visible_board[pos_x, pos_y] == 1:
-            self.visible_board[pos_x, pos_y] = 0
+        pos_x, pos_y = self._adjust_coords(x, y)
+        visible_board = self._get_visible_board()
+        if visible_board[pos_x, pos_y] == 1:
+            visible_board[pos_x, pos_y] = 0
             self.value = self.visible_board
 
     def resize(self, value):
@@ -54,16 +59,23 @@ class Model(Observable):
         self._zoom = value
         self.value = self.visible_board
 
-    def get_submatrix(self, scale):
-        """ Method to retrieve a centered submatrix of the board """
-        height_shift = scale
-        width_shift = scale * self._ratio
+    def _get_visible_board(self):
+        """ Method to retrieve a centered submatrix of the board.
+        It returns the reference to the board, so changes to the returned matrix
+        is reflected on the state of the board. """
+        height_shift = self._zoom
+        width_shift = self._zoom * self._ratio
         return self._board[height_shift:self._height - height_shift, width_shift:self._width - width_shift]
 
-    def adjust_coords(self, x, y):
+    def _adjust_coords(self, x, y):
         """ Method to adjust coordinates to the actual visible board """
         # Multiply coordinates for max size board (x,y) by the scale ratio
         # between dimensions of the visible board and the max size board
-        pos_x = int(y * (self.visible_board.shape[0] / self._height))
-        pos_y = int(x * (self.visible_board.shape[1] / self._width))
+        visible_board = self._get_visible_board()
+        pos_x = int(y * (visible_board.shape[0] / self._height))
+        pos_y = int(x * (visible_board.shape[1] / self._width))
         return pos_x, pos_y
+
+    def clear(self):
+        self._board = np.zeros((self._height, self._width))
+        self.value = self.visible_board
