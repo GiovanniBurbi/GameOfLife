@@ -96,4 +96,5 @@ class View(QMainWindow):
                                                     self._overlay_grid)
 
     def clear_board(self):
+        """ Handler of the clear command """
         self._controller.clear_board()
