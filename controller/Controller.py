@@ -36,3 +36,7 @@ class Controller(object):
     def change_scale(self, value):
         """ Delegates to the model the resize of the board """
         self._model.resize(value)
+
+    def clear_board(self):
+        """ Delegates to the model the clear of the board. """
+        self._model.clear()
