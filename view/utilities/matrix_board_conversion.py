@@ -4,14 +4,14 @@ from qimage2ndarray import array2qimage
 
 """ RGB Colors"""
 LIGHT_BLUE = 0, 255, 255
-WHITE = 255, 255, 255
 
 
 def matrix_board_conversion(label, board, px_width, px_height):
     """
     Method for convert an numpy array to a label for the GUI.
-    It updates the pixmap of the label passed as parameter to the method and
-    scales it to the pixel dimensions required.
+    It takes a 2D matrix, board, with elements of 0 or 1 nad translates it into an
+    3 dimensions rgb matrix, then it updates the pixmap of the label passed as parameter
+    and scales it to the pixel dimensions required.
     """
     # Convert board, 2d matrix, into a rgb matrix
     rgb_board = rgb_matrix(board)
@@ -25,8 +25,16 @@ def matrix_board_conversion(label, board, px_width, px_height):
 
 
 def rgb_matrix(board):
+    """ Takes a 2D matrix with elements of value 0 or 1 and converts it into a
+    3D rgb matrix. A cell with value 0 in the original 2D matrix is converted
+    into a white cell, while, a cell with value 1 is converted into a
+    light-blue cell.
+     """
+    # Initialize a 3D rgb matrix with all cells WHITE. rgb white = (255, 255, 255).
     rgb_board = np.full((board.shape[0], board.shape[1], 3), 255)
     for (x, y), value in np.ndenumerate(board):
+        # If cell has value 1, then it's alive
         if value == 1:
-            rgb_board[x, y, 0] = 0
+            # Make that cell light-blue color
+            rgb_board[x, y, 0:3] = LIGHT_BLUE
     return rgb_board
