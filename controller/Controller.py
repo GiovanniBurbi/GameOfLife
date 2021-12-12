@@ -25,8 +25,11 @@ class Controller(object):
         self._model = model
         self._view = view
         self._generation_lifetime = DEFAULT_LIFETIME
+
+        # Init list of patterns in the view and then connect events
         self._view.init_patterns_list(self._model.patterns)
         self._view.connect_events()
+
         # Register update_board method to receive the updates from the model about the board state
         model.register(self.update_board)
 
@@ -69,4 +72,5 @@ class Controller(object):
         self._generation_lifetime = DEFAULT_LIFETIME + (rate * AMPLIFIER)
 
     def selected_pattern(self, pattern):
+        """ Delegates to the model the load of a pattern """
         self._model.load_pattern(pattern)
