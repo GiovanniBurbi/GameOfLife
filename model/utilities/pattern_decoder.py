@@ -14,7 +14,7 @@ def pattern_decoder(file):
                 # find all numbers in line and cast those to int
                 numbers = [int(x) for x in re.findall(r'\d+', line)]
                 # save online the pattern_width and height, the first two numbers in the line
-                pattern_width, pattern_height = numebers[:2]
+                pattern_width, pattern_height = numbers[:2]
             else:
                 # Other lines are part of the rle code
                 rle_code += line
