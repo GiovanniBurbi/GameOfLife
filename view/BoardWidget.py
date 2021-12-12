@@ -14,7 +14,8 @@ class BoardWidget(QWidget):
     that can be show in the graphic interface.
 
     Attributes:
-        board : Numpy array, state of the board
+        board : Numpy array representing the initial state of the board
+        board_height, board_width : dimensions initial board
         board_label : Conversion of the board array in a Qt graphic element.
         view : Reference to an instance of the view.
                Board widget is part of the view and delegates to it
@@ -26,6 +27,7 @@ class BoardWidget(QWidget):
     def __init__(self, board, px_width, px_height, view):
         QWidget.__init__(self)
         self._board = board
+        self._board_height, self._board_width = board.shape[:2]
         self._px_width = px_width
         self._px_height = px_height
         self._view = view
@@ -41,10 +43,9 @@ class BoardWidget(QWidget):
         Left click ---> set cell alive
         Right click ---> set cell dead
         """
-        board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_y = board_height * event.y() / self._px_height
-        pos_x = board_width * event.x() / self._px_width
+        pos_y = self._board_height * event.y() / self._px_height
+        pos_x = self._board_width * event.x() / self._px_width
         # save current mouse position
         self._mouse_pos = pos_x, pos_y
         if event.button() == Qt.LeftButton:
@@ -59,12 +60,11 @@ class BoardWidget(QWidget):
         Left click ---> draw alive cells
         Right click ---> kill alive cells
         """
-        board_height, board_width = self._board.shape[:2]
         # Convert the widget coordinates into board-matrix indexes
-        pos_y = board_height * event.y() / self._px_height
-        pos_x = board_width * event.x() / self._px_width
+        pos_y = self._board_height * event.y() / self._px_height
+        pos_x = self._board_width * event.x() / self._px_width
         # check that the position (x,y) is inside the board and is changed
-        if (lambda y, x: True if 0 <= y < board_height and 0 <= x < board_width else False)(pos_y, pos_x) \
+        if (lambda y, x: True if 0 <= y < self._board_height and 0 <= x < self._board_width else False)(pos_y, pos_x) \
                 and (pos_x, pos_y) != self._mouse_pos:
             # save current mouse position
             self._mouse_pos = pos_x, pos_y

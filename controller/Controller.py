@@ -1,9 +1,10 @@
 from PyQt5.QtCore import QTimer
 
+
 """ Constant for amplify rate values into millisec """
 AMPLIFIER = 13
 """ Constant for the default lifetime of a single generation """
-DEFAULT_LIFETIME = 700
+DEFAULT_LIFETIME = 400
 
 
 class Controller(object):
@@ -24,6 +25,10 @@ class Controller(object):
         self._model = model
         self._view = view
         self._generation_lifetime = DEFAULT_LIFETIME
+
+        # Init list of patterns in the view and then connect events
+        self._view.init_patterns_list(self._model.patterns)
+        self._view.connect_events()
 
         # Register update_board method to receive the updates from the model about the board state
         model.register(self.update_board)
@@ -65,3 +70,7 @@ class Controller(object):
     def change_rate(self, rate):
         """ Method that change the current lifetime based on a rate passed as parameter. """
         self._generation_lifetime = DEFAULT_LIFETIME + (rate * AMPLIFIER)
+
+    def selected_pattern(self, pattern):
+        """ Delegates to the model the load of a pattern """
+        self._model.load_pattern(pattern)

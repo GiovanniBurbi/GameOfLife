@@ -1,10 +1,11 @@
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene
 
 from view import BoardWidget, Ui_GameOfLife
 from view.utilities import create_grid_over_scene, resize_grid_over_scene
 
 """ Info messages to show in the GUI """
-ENTRY_INFO = "Draw alive cells or Load a pattern and start the simulation"
+ENTRY_INFO = "Draw alive cells or Load a pattern before starting the simulation"
 DRAW_INFO = "Left click to set alive cells, Right click to kill alive cells"
 
 
@@ -21,15 +22,16 @@ class View(QMainWindow):
         overlay_grid : Item group that represent the grid over the board
         info_label_changed: flag to inform if the info label is changed
         max_board_width, max_board_height : max dimensions of the board matrix
+        ratio : ratio of the max dimensions of the board matrix
         board_px_width, board_px_height : pixel dimensions of the board widget
-        simulating : flag to inform if the simulation is running
+        play_pressed : flag to inform if the play button has been pressed
+        default_framerate : default framerate value
     """
 
     def __init__(self):
         super().__init__()
         self._ui = Ui_GameOfLife()
         self._ui.setupUi(self)
-        self.connect_events()
         self._overlay_grid = None
         self._board_widget = None
         self._controller = None
@@ -41,6 +43,7 @@ class View(QMainWindow):
         self._ratio = None
         self._play_pressed = False
         self._default_framerate = self._ui.framerateSlider.value()
+
 
     @property
     def is_play_pressed(self):
@@ -76,7 +79,6 @@ class View(QMainWindow):
         self._controller.state_cell_to_alive(x, y)
         if not self._info_label_changed:
             self.change_info_label(DRAW_INFO)
-            self._info_label_changed = True
 
     def set_cell_dead(self, x, y):
         """ Delegates to the controller the change in the state of the cell """
@@ -85,6 +87,7 @@ class View(QMainWindow):
     def change_info_label(self, msg):
         """ Method to change info label"""
         self._ui.infoLabel.setText(msg)
+        self._info_label_changed = not self._info_label_changed
 
     def connect_events(self):
         """ Method to connect GUI event to the handler """
@@ -92,10 +95,10 @@ class View(QMainWindow):
         self._ui.clearButton.released.connect(self.clear_board)
         self._ui.playPauseButton.released.connect(self.play_pause)
         self._ui.framerateSlider.valueChanged.connect(self.set_rate)
+        self._ui.selectPatternBox.currentTextChanged.connect(self.load_pattern)
 
-    def set_scale(self):
+    def set_scale(self, value):
         """ Handler of the board resize """
-        value = self._ui.zoomSlider.value()
         self._controller.change_scale(value)
         # Calculate the new dimensions of the grid
         resized_height = self._max_board_height - self._ratio * value
@@ -110,8 +113,8 @@ class View(QMainWindow):
         self._controller.clear_board()
         if self._play_pressed:
             self.play_pause()
+        self.reset_pattern_selection()
         self.change_info_label(ENTRY_INFO)
-        self._info_label_changed = False
 
     def play_pause(self):
         """ Handler of the play command """
@@ -127,7 +130,39 @@ class View(QMainWindow):
             self._ui.playPauseButton.setText("Play")
             self._play_pressed = False
 
-    def set_rate(self):
+    def set_rate(self, value):
         """ Handler of the changes of the framerate """
-        value = self._default_framerate - self._ui.framerateSlider.value()
-        self._controller.change_rate(value)
+        variation = self._default_framerate - value
+        self._controller.change_rate(variation)
+
+    def load_pattern(self, pattern):
+        """ Handler of the newly selected option in the combo box, select pattern """
+        if pattern != self._ui.selectPatternBox.model().item(0).text():
+            if not self._info_label_changed:
+                self.change_info_label(DRAW_INFO)
+            if self._play_pressed:
+                self.play_pause()
+            self._controller.selected_pattern(pattern)
+
+    def init_patterns_list(self, patterns):
+        """ Method to set the list of the combo box and its element's font style """
+        pattern_box = self._ui.selectPatternBox
+        pattern_box.addItem("------ Select a Pattern -----")
+        pattern_box.model().item(0).setEnabled(False)
+        pattern_box.addItems(patterns)
+        self.pattern_list_style()
+
+    def pattern_list_style(self):
+        """ Method to set the font of the elements in the combo box list """
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPointSize(self._ui.selectPatternBox.font().pointSize())
+        pattern_box = self._ui.selectPatternBox
+        num_elements = pattern_box.count()
+        [pattern_box.model().item(i + 1).setFont(font) for i in range(num_elements - 1)]
+
+    def reset_pattern_selection(self):
+        """ Method to reset to default the current text shown in the combo box """
+        pattern_menu = self._ui.selectPatternBox
+        if pattern_menu.currentText() != pattern_menu.model().item(0).text():
+            pattern_menu.setCurrentText(pattern_menu.model().item(0).text())

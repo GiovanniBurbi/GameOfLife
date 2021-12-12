@@ -1,7 +1,11 @@
+import os
+import sys
+
 import numpy as np
 from scipy.ndimage import convolve
 
 from model import Observable
+from model.utilities import pattern_decoder
 
 
 class Model(Observable):
@@ -18,10 +22,12 @@ class Model(Observable):
                 Initial state is a zero matrix, meaning all cells are dead.
         ratio : matrix board ratio
         zoom : zoom of the board selected
-        kernel: convolution kernel. To calculate sum of the values of the adjacent cells
+        kernel : convolution kernel. To calculate sum of the values of the adjacent cells
+        pattern_location : path to the folder containing the rle files of preset patterns
+        files : pattern files inside the patterns folder
     """
 
-    def __init__(self, height=30, width=60):
+    def __init__(self, height=40, width=80):
         super().__init__()
         self._width = width
         self._height = height
@@ -31,6 +37,12 @@ class Model(Observable):
         self._kernel = np.array([[1, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 1]])
+        self._patterns_location = os.path.abspath(os.path.dirname(sys.argv[0])) + "/model/patterns/"
+        self._files = sorted([f for f in os.listdir(self._patterns_location)], key=lambda f: f.lower())
+
+    @property
+    def patterns(self):
+        return self._files
 
     @property
     def visible_board(self):
@@ -102,4 +114,35 @@ class Model(Observable):
         self._board = (
                 ((self._board == 1) & (neighbors > 1) & (neighbors < 4))
                 | ((self._board == 0) & (neighbors == 3))).astype(np.uint8)
+        self.value = self.visible_board
+
+    def load_pattern(self, pattern_name):
+        """ Method to load in the board a certain pattern, using
+        its name passed as parameter"""
+        print(pattern_name)
+        board = np.zeros((self._height, self._width))
+        # Open the requested file in the pattern folder
+        with open(str(self._patterns_location + pattern_name)) as f:
+            # Pass the pattern file to the pattern decoder function
+            pattern_width, pattern_height, pattern_coords = pattern_decoder(f)
+            # Using the dimension of the pattern to calculate the coordinates offset
+            # to then set the pattern in the center of the board
+            # Custom offset for some type of pattern to better show the evolutions or better centering
+            if pattern_name in ["Diamond", "Pentadecathlon", "Queen bee shuttle"]:
+                offset_x = int(self._width / 2 - pattern_width / 2)
+                offset_y = int(self._height / 2 - pattern_height / 2)
+            elif pattern_name == "Space rake":
+                offset_x = int(self._width / 2 - pattern_width / 2) - 26
+                offset_y = int(self._height / 2 - pattern_height / 2) + 8
+            elif pattern_name in ["Schick engine", "Spaceship"]:
+                offset_x = int(self._width / 2 - pattern_width / 2) + 30
+                offset_y = int(self._height / 2 - pattern_height / 2)
+            else:
+                offset_x = int(self._width / 2 - pattern_width / 2) + 1
+                offset_y = int(self._height / 2 - pattern_height / 2)
+            for x, y in pattern_coords:
+                # Set alive the cells specified in the pattern file
+                board[offset_y + y, offset_x + x] = 1
+        # Update board and notify
+        self._board = board
         self.value = self.visible_board
