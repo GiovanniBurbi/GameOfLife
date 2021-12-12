@@ -140,7 +140,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Draw alive cells or Load a pattern and start the simulation</string>
+         <string>Draw alive cells or Load a pattern before starting the simulation</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

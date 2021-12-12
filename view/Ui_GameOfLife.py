@@ -197,7 +197,8 @@ class Ui_GameOfLife(object):
         self.configurationBox.setTitle(_translate("GameOfLife", "Configurations"))
         self.historyButton.setText(_translate("GameOfLife", "History"))
         self.loadPatternLabel.setText(_translate("GameOfLife", "Load Pattern:"))
-        self.infoLabel.setText(_translate("GameOfLife", "Draw alive cells or Load a pattern and start the simulation"))
+        self.infoLabel.setText(
+            _translate("GameOfLife", "Draw alive cells or Load a pattern before starting the simulation"))
         self.controlsBox.setTitle(_translate("GameOfLife", "Controls"))
         self.playPauseButton.setText(_translate("GameOfLife", "Play"))
         self.clearButton.setText(_translate("GameOfLife", "Clear"))

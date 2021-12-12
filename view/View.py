@@ -5,7 +5,7 @@ from view import BoardWidget, Ui_GameOfLife
 from view.utilities import create_grid_over_scene, resize_grid_over_scene
 
 """ Info messages to show in the GUI """
-ENTRY_INFO = "Draw alive cells or Load a pattern and start the simulation"
+ENTRY_INFO = "Draw alive cells or Load a pattern before starting the simulation"
 DRAW_INFO = "Left click to set alive cells, Right click to kill alive cells"
 
 
