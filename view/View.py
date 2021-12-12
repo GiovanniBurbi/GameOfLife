@@ -44,7 +44,6 @@ class View(QMainWindow):
         self._play_pressed = False
         self._default_framerate = self._ui.framerateSlider.value()
 
-
     @property
     def is_play_pressed(self):
         return self._play_pressed
@@ -136,7 +135,10 @@ class View(QMainWindow):
         self._controller.change_rate(variation)
 
     def load_pattern(self, pattern):
-        """ Handler of the newly selected option in the combo box, select pattern """
+        """ Handler of the newly selected option in the combo box, select pattern.
+         It stops the simulation if it was running, change the info label to the initial one
+         and reset the zoom of the board."""
+        self.reset_zoom()
         if pattern != self._ui.selectPatternBox.model().item(0).text():
             if not self._info_label_changed:
                 self.change_info_label(DRAW_INFO)
@@ -166,3 +168,7 @@ class View(QMainWindow):
         pattern_menu = self._ui.selectPatternBox
         if pattern_menu.currentText() != pattern_menu.model().item(0).text():
             pattern_menu.setCurrentText(pattern_menu.model().item(0).text())
+
+    def reset_zoom(self):
+        """ Method to reset the value of the zoom slider"""
+        self._ui.zoomSlider.setValue(0)

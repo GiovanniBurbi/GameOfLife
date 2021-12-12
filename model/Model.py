@@ -119,7 +119,6 @@ class Model(Observable):
     def load_pattern(self, pattern_name):
         """ Method to load in the board a certain pattern, using
         its name passed as parameter"""
-        print(pattern_name)
         board = np.zeros((self._height, self._width))
         # Open the requested file in the pattern folder
         with open(str(self._patterns_location + pattern_name)) as f:
