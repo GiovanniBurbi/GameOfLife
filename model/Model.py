@@ -127,7 +127,7 @@ class Model(Observable):
             # Using the dimension of the pattern to calculate the coordinates offset
             # to then set the pattern in the center of the board
             offset_y = int(self._height / 2 - pattern_height / 2)
-            offset_x = int(self._width / 2 - pattern_width / 2)
+            offset_x = int(self._width / 2 - pattern_width / 2) + 1
             for x, y in pattern_coords:
                 # Set alive the cells specified in the pattern file
                 board[offset_y + y, offset_x + x] = 1

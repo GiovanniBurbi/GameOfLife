@@ -4,7 +4,7 @@ from PyQt5.QtCore import QTimer
 """ Constant for amplify rate values into millisec """
 AMPLIFIER = 13
 """ Constant for the default lifetime of a single generation """
-DEFAULT_LIFETIME = 650
+DEFAULT_LIFETIME = 400
 
 
 class Controller(object):
