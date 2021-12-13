@@ -4,6 +4,10 @@ from qimage2ndarray import array2qimage
 
 """ RGB Colors"""
 LIGHT_BLUE = 0, 255, 255
+GREEN = 0, 255, 0
+YELLOW = 255, 255, 0
+ORANGE = 255, 125, 0
+RED = 255, 0, 0
 
 
 def matrix_board_conversion(label, board, px_width, px_height):
@@ -37,4 +41,12 @@ def rgb_matrix(board):
         if value == 1:
             # Make that cell light-blue color
             rgb_board[x, y, 0:3] = LIGHT_BLUE
+        elif value == 2:
+            rgb_board[x, y, 0:3] = GREEN
+        elif value == 3:
+            rgb_board[x, y, 0:3] = YELLOW
+        elif value == 4:
+            rgb_board[x, y, 0:3] = ORANGE
+        elif value >= 5:
+            rgb_board[x, y, 0:3] = RED
     return rgb_board
