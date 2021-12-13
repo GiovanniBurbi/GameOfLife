@@ -24,16 +24,17 @@ through time. The evolution of the board state is governed by a few simple rules
 3. Each populated location with two or three neighbors survives.
 4. Each unpopulated location that becomes populated if it has exactly three populated neighbors.
 5. All updates are performed simultaneously in parallel.
+
 This figure illustrates the rules for cell death, survival, and birth:
-https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/GameOfLifeRules.png
+!https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/GameOfLifeRules.png
 
 ## Requirements
 The application has been build and tested with:
-* python version: 3.8
-* PyQt5 version: 5.9.2
-* scipy version: 1.7.1
-* numpy version: 1.21.2
-* qimage2ndarray version: 1.8.3
+* **python**, version: 3.8
+* **PyQt5**, version: 5.9.2
+* **scipy**, version: 1.7.1
+* **numpy**, version: 1.21.2
+* **qimage2ndarray**, version: 1.8.3
 
 ## Getting started
 TODO
