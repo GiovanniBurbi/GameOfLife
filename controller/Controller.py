@@ -74,3 +74,7 @@ class Controller(object):
     def selected_pattern(self, pattern):
         """ Delegates to the model the load of a pattern """
         self._model.load_pattern(pattern)
+
+    def history_switch(self, enabled):
+        """ Delegates to the model the activation/deactivation of the history mode """
+        self._model.history_mode(enabled)
