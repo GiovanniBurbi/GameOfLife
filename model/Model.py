@@ -21,12 +21,12 @@ class Model(Observable):
         board : numpy array with 2 dimensions, represent current state of the cells.
                 Initial state is a zero matrix, meaning all cells are dead.
         ratio : matrix board ratio
-        zoom : zoom of the board selected
         kernel : convolution kernel. To calculate sum of the values of the adjacent cells
         pattern_location : path to the folder containing the rle files of preset patterns
         files : pattern files inside the patterns folder
         history_mode : flag activation history mode
         history_board : board with the ages of every alive cell
+        height_shift, width_shift: offsets to center board after zoom
     """
 
     def __init__(self, height=40, width=80):
@@ -35,7 +35,6 @@ class Model(Observable):
         self._height = height
         self._ratio = int(width / height)
         self._board = np.zeros((height, width), np.int8)
-        self._zoom = 0
         self._kernel = np.array([[1, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 1]])
@@ -43,6 +42,8 @@ class Model(Observable):
         self._files = sorted([f for f in os.listdir(self._patterns_location)], key=lambda f: f.lower())
         self._history_mode = False
         self._history_board = np.zeros((height, width), np.int8)
+        self._height_shift = 0
+        self._width_shift = 0
 
     @property
     def patterns(self):
@@ -82,26 +83,25 @@ class Model(Observable):
             visible_history_board[pos_x, pos_y] = 0
             self.value = self.visible_board
 
-    def resize(self, value):
+    def resize(self, zoom):
         """ Method that change the visible matrix according to a value """
-        self._zoom = value
+        self._height_shift = zoom
+        self._width_shift = zoom * self._ratio
         self.value = self.visible_board
 
     def _get_visible_state_board(self):
         """ Method to retrieve a centered submatrix of the state board.
         It returns the reference to the board, so changes to the returned matrix
         is reflected on the state of the board. """
-        height_shift = self._zoom
-        width_shift = self._zoom * self._ratio
-        return self._board[height_shift:self._height - height_shift, width_shift:self._width - width_shift]
+        return self._board[self._height_shift:self._height - self._height_shift,
+               self._width_shift:self._width - self._width_shift]
 
     def _get_visible_history_board(self):
         """ Method to retrieve a centered submatrix of the history board.
         It returns the reference to the board, so changes to the returned matrix
         is reflected on the state of the history board. """
-        height_shift = self._zoom
-        width_shift = self._zoom * self._ratio
-        return self._history_board[height_shift:self._height - height_shift, width_shift:self._width - width_shift]
+        return self._history_board[self._height_shift:self._height - self._height_shift,
+               self._width_shift:self._width - self._width_shift]
 
     def _adjust_coords(self, x, y):
         """ Method to adjust coordinates to the actual visible board """
@@ -182,3 +182,4 @@ class Model(Observable):
         if enabled:
             self._history_board = np.zeros((self._height, self._width))
         self._history_mode = enabled
+
