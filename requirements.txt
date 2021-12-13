@@ -1,0 +1,5 @@
+pyqt~=5.9.2
+scipy~=1.7.1
+numpy~=1.21.2
+python>=3.8
+qimage2ndarray~=1.8.3
