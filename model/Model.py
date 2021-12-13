@@ -124,24 +124,27 @@ class Model(Observable):
         with open(str(self._patterns_location + pattern_name)) as f:
             # Pass the pattern file to the pattern decoder function
             pattern_width, pattern_height, pattern_coords = pattern_decoder(f)
-            # Using the dimension of the pattern to calculate the coordinates offset
-            # to then set the pattern in the center of the board
-            # Custom offset for some type of pattern to better show the evolutions or better centering
-            if pattern_name in ["Diamond", "Pentadecathlon", "Queen bee shuttle"]:
-                offset_x = int(self._width / 2 - pattern_width / 2)
-                offset_y = int(self._height / 2 - pattern_height / 2)
-            elif pattern_name == "Space rake":
-                offset_x = int(self._width / 2 - pattern_width / 2) - 26
-                offset_y = int(self._height / 2 - pattern_height / 2) + 8
-            elif pattern_name in ["Schick engine", "Spaceship"]:
-                offset_x = int(self._width / 2 - pattern_width / 2) + 30
-                offset_y = int(self._height / 2 - pattern_height / 2)
-            else:
-                offset_x = int(self._width / 2 - pattern_width / 2) + 1
-                offset_y = int(self._height / 2 - pattern_height / 2)
+            offset_x, offset_y = self.compute_offsets(pattern_height, pattern_width, pattern_name)
             for x, y in pattern_coords:
                 # Set alive the cells specified in the pattern file
                 board[offset_y + y, offset_x + x] = 1
         # Update board and notify
         self._board = board
         self.value = self.visible_board
+
+    def compute_offsets(self, pattern_height, pattern_width, pattern_name):
+        # Using the dimension of the pattern to calculate the coordinates offset from the center of the board.
+        # Custom offset for some type of pattern to better show the evolutions or better centering
+        if pattern_name in ["Diamond", "Pentadecathlon", "Queen bee shuttle"]:
+            offset_x = int(self._width / 2 - pattern_width / 2)
+            offset_y = int(self._height / 2 - pattern_height / 2)
+        elif pattern_name == "Space rake":
+            offset_x = int(self._width / 2 - pattern_width / 2) - 26
+            offset_y = int(self._height / 2 - pattern_height / 2) + 8
+        elif pattern_name in ["Schick engine", "Spaceship"]:
+            offset_x = int(self._width / 2 - pattern_width / 2) + 30
+            offset_y = int(self._height / 2 - pattern_height / 2)
+        else:
+            offset_x = int(self._width / 2 - pattern_width / 2) + 1
+            offset_y = int(self._height / 2 - pattern_height / 2)
+        return offset_x, offset_y
