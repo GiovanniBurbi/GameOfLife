@@ -26,7 +26,7 @@ through time. The evolution of the board state is governed by a few simple rules
 5. All updates are performed simultaneously in parallel.
 
 This figure illustrates the rules for cell death, survival, and birth:
-![plot]https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/GameOfLifeRules.png
+![](https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/GameOfLifeRules.png)
 
 ## Requirements
 The application has been build and tested with:
