@@ -1,5 +1,5 @@
 # Game Of Life
-> Conway's Game of Life implementation using convolution. Code based on PyQt5.
+> Conway's Game of Life implementation using convolution. Based on PyQt5.
 
 ## Overview
 The [Game of Life](http://ddi.cs.uni-potsdam.de/HyFISCH/Produzieren/lis_projekt/proj_gamelife/ConwayScientificAmerican.htm)
