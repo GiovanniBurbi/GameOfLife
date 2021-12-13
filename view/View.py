@@ -95,6 +95,7 @@ class View(QMainWindow):
         self._ui.playPauseButton.released.connect(self.play_pause)
         self._ui.framerateSlider.valueChanged.connect(self.set_rate)
         self._ui.selectPatternBox.currentTextChanged.connect(self.load_pattern)
+        self._ui.historyButton.toggled.connect(self.history_switch)
 
     def set_scale(self, value):
         """ Handler of the board resize """
@@ -172,3 +173,7 @@ class View(QMainWindow):
     def reset_zoom(self):
         """ Method to reset the value of the zoom slider"""
         self._ui.zoomSlider.setValue(0)
+
+    def history_switch(self, enabled):
+        """ Handler change of state of the history radio button"""
+        self._controller.history_switch(enabled)
