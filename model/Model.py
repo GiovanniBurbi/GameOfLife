@@ -216,10 +216,10 @@ class Model(Observable):
 
     def history_mode(self, enabled):
         """ Method to set the history mode """
-        # If history mode is enabled, reset history board so that it will start
-        # with a fresh history matrix. It will show the age of cells from this moment.
+        # If history mode is enabled, reset history board to the actual state board so that it will start
+        # with a fresh history matrix of only "newborn". It will show the age of cells from this moment.
         if enabled:
-            self._history_board = np.zeros((self._height_max, self._width_max))
+            self._history_board = self._board
         self._history_mode = enabled
 
     def panning_set(self, x, y):
