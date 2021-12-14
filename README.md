@@ -28,6 +28,8 @@ through time. The evolution of the board state is governed by a few simple rules
 This figure illustrates the rules for cell **death**, **survival**, and **birth**:
 ![](https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/GameOfLifeRules.png)
 
+# Getting started
+
 ## Requirements
 The application has been **build** and **tested** with:
 * **python** 3.8
@@ -36,17 +38,16 @@ The application has been **build** and **tested** with:
 * **numpy** 1.21.2
 * **qimage2ndarray** 1.8.3
 
-## Getting started
+## Run the Application
 TODO
 
 ## Features
-
 * **Start/pause/clear**: The GUI supports controls that allow the user to start and pause the
 simulation, and clear the current state of the board.
 * **Variable framerate**: The GUI supports a control that allows the user to select the framerate at which the simulation is run and animated.
 * **Drawing/editing of state**: The GUI allows the user to draw and edit the state of the board (i.e. fill in or empty oyt occupied locations) with the mouse. **Left click** allows drawing alive cells, **Right click** allows delete filled cells. This feature is available to the user whenever the simulation is paused or running, allowing the user to edit the current state in realtime.
 * **Loading of initial state**: The GUI provides some classic examples of Game of Life Patterns that the user can play with.
-* **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning).
+* **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning). **Holding down** the **scroll button** allows the panning of the board according to the movements of the mouse.
 * **Cell history**: The GUI keeps track of how long each cell has been alive from the activation of the history mode. It's shown visually by changing the color from light blue (newborn) to bright red (ancient).
 
 ## Demo
