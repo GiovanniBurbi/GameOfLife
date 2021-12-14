@@ -151,8 +151,8 @@ class Model(Observable):
 
     def clear(self):
         """ Method that set the boards to the initial state of all cells dead. """
-        self._board = np.zeros((self._height_max, self._width_max))
-        self._history_board = np.zeros((self._height_max, self._width_max))
+        self._board = np.zeros((self._height_max, self._width_max), np.int8)
+        self._history_board = np.zeros((self._height_max, self._width_max), np.int8)
         self.value = self.visible_board
 
     def _compute_neighbors(self):
@@ -176,13 +176,16 @@ class Model(Observable):
         # Turn off cells in the history board that are dead in the new state board
         self._history_board[self._board == 0] = 0
         if self._panning_mode:
-            self._panning_board = self._adjust_panning(self._board)
+            if self._history_mode:
+                self._panning_board = self._adjust_panning(self._history_board)
+            else:
+                self._panning_board = self._adjust_panning(self._board)
         self.value = self.visible_board
 
     def load_pattern(self, pattern_name):
         """ Method to load in the board a certain pattern, using
         its name passed as parameter"""
-        board = np.zeros((self._height_max, self._width_max))
+        board = np.zeros((self._height_max, self._width_max), np.int8)
         # Open the requested file in the pattern folder
         with open(str(self._patterns_location + pattern_name)) as f:
             # Pass the pattern file to the pattern decoder function
@@ -227,7 +230,10 @@ class Model(Observable):
         from where the panning mode has been activated"""
         self._pan_x, self._pan_y = self._adjust_coords(x, y)
         self._panning_mode = True
-        self._panning_board = np.copy(self._board)
+        if self._history_mode:
+            self._panning_board = np.copy(self._history_board)
+        else:
+            self._panning_board = np.copy(self._board)
 
     def change_focus(self, x, y):
         """ Method to change the focus of the board. It implements the panning.
@@ -261,7 +267,11 @@ class Model(Observable):
         self._panning_mode = False
         self._current_panning_x = 0
         self._current_panning_y = 0
-        self._board = self._panning_board
+        if self._history_mode:
+            self._history_board = self._panning_board
+            self._convert_to_state(self._history_board)
+        else:
+            self._board = self._panning_board
         self.value = self.visible_board
 
     def _translation_x(self, board, value):
@@ -300,7 +310,7 @@ class Model(Observable):
         new = np.zeros((dim_x, dim_y), np.int8)
         for i in range(dim_x):
             for j in range(dim_y):
-                if board[i, j] == 1:
+                if board[i, j] > 0:
                     # If the alive element would go over board, modify current_panning pos to return on board
                     if i + self._current_panning_x < 0:
                         self._current_panning_x += 1
@@ -312,3 +322,7 @@ class Model(Observable):
                         self._current_panning_y -= 1
                     new[i + self._current_panning_x, j + self._current_panning_y] = board[i, j]
         return new
+
+    def _convert_to_state(self, history):
+        self._board[history == 0] = 0
+        self._board[history > 0] = 1
