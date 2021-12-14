@@ -240,13 +240,13 @@ class Model(Observable):
 
             # Based on what changed, shift the board
             if pan_x - self._pan_x < 0:
-                board = self._translation_x(board, 1)
-            elif pan_x - self._pan_x > 0:
                 board = self._translation_x(board, -1)
+            elif pan_x - self._pan_x > 0:
+                board = self._translation_x(board, 1)
             if pan_y - self._pan_y < 0:
-                board = self._translation_y(board, 1)
-            elif pan_y - self._pan_y > 0:
                 board = self._translation_y(board, -1)
+            elif pan_y - self._pan_y > 0:
+                board = self._translation_y(board, 1)
 
             # updates actual coords of the panning
             self._pan_x = pan_x
