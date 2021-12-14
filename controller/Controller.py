@@ -81,7 +81,7 @@ class Controller(object):
 
     def panning_activated(self, x, y):
         """ Delegates to the model the activation of the panning mode """
-        self._model.panning_set(x, y)
+        self._model.set_panning_mode(True, x, y)
 
     def panning(self, x, y):
         """ Delegates to the controller the panning of the board """
@@ -89,4 +89,4 @@ class Controller(object):
 
     def panning_deactivated(self):
         """ Delegates to the model the deactivation of the panning mode """
-        self._model.panning_unset()
+        self._model.set_panning_mode(False)
