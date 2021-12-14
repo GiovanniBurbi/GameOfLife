@@ -7,7 +7,7 @@ from view.utilities import create_grid_over_scene, resize_grid_over_scene
 
 """ Info messages to show in the GUI """
 ENTRY_INFO = "Draw alive cells or Load a pattern before starting the simulation"
-DRAW_INFO = "Left click to set alive cells, Right click to kill alive cells"
+DRAW_INFO = "Left click to set alive cells, right click to kill cells, hold scroll button for panning"
 
 
 class View(QMainWindow):
