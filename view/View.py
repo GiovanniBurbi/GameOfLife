@@ -177,3 +177,15 @@ class View(QMainWindow):
     def history_switch(self, enabled):
         """ Handler change of state of the history radio button"""
         self._controller.history_switch(enabled)
+
+    def panning_activated(self, x, y):
+        """ Delegates to the controller the activation of the panning mode """
+        self._controller.panning_activated(x, y)
+
+    def panning(self, x, y):
+        """ Delegates to the controller panning of the board """
+        self._controller.panning(x, y)
+
+    def panning_deactivated(self):
+        """ Delegates to the controller the deactivation of the panning mode """
+        self._controller.panning_deactivated()
