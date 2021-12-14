@@ -46,7 +46,7 @@ simulation, and clear the current state of the board.
 * **Variable framerate**: The GUI supports a control that allows the user to select the framerate at which the simulation is run and animated.
 * **Drawing/editing of state**: The GUI allows the user to draw and edit the state of the board (i.e. fill in or empty oyt occupied locations) with the mouse. **Left click** allows drawing alive cells, **Right click** allows delete filled cells. This feature is available to the user whenever the simulation is paused or running, allowing the user to edit the current state in realtime.
 * **Loading of initial state**: The GUI provides some classic examples of Game of Life Patterns that the user can play with.
-* **Zooming of board**: The GUI allows the user to select the grid size (zoom).
+* **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning).
 * **Cell history**: The GUI keeps track of how long each cell has been alive from the activation of the history mode. It's shown visually by changing the color from light blue (newborn) to bright red (ancient).
 
 ## Demo
