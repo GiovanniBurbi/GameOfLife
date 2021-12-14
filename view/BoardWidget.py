@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QLabel, QWidget
 
 from view.utilities import matrix_board_conversion
 
+""" Sensibility updates of mouse position while padding the board """
+SENSIBILITY = 2.5
+
 
 class BoardWidget(QWidget):
     """
@@ -71,13 +74,18 @@ class BoardWidget(QWidget):
         if (lambda y, x: True if 0 <= y < self._board_height and 0 <= x < self._board_width else False)(pos_y, pos_x) \
                 and (pos_x, pos_y) != self._mouse_pos:
             # save current mouse position
-            self._mouse_pos = pos_x, pos_y
             if event.buttons() == Qt.LeftButton:
                 self._view.set_cell_alive(pos_x, pos_y)
+                self._mouse_pos = pos_x, pos_y
             elif event.buttons() == Qt.RightButton:
                 self._view.set_cell_dead(pos_x, pos_y)
+                self._mouse_pos = pos_x, pos_y
             elif event.buttons() == Qt.MidButton:
-                self._view.panning(pos_x, pos_y)
+                x_variation = pos_x - self._mouse_pos[0]
+                y_variation = pos_y - self._mouse_pos[1]
+                if x_variation > SENSIBILITY or x_variation < -SENSIBILITY or y_variation > SENSIBILITY or y_variation < -SENSIBILITY:
+                    self._view.panning(pos_x, pos_y)
+                    self._mouse_pos = pos_x, pos_y
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         """ Logic for the user's release click interaction with the board.
