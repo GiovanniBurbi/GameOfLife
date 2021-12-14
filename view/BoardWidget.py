@@ -39,9 +39,10 @@ class BoardWidget(QWidget):
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
         """
         Logic for the user's click interaction with the board.
-        Delegates to the View the command to change cell's state
+        Delegates to the View the logic to apply based on the button clicked
         Left click ---> set cell alive
         Right click ---> set cell dead
+        Mid click ---> start panning mode
         """
         # Convert the widget coordinates into board-matrix indexes
         pos_y = self._board_height * event.y() / self._px_height
@@ -52,13 +53,16 @@ class BoardWidget(QWidget):
             self._view.set_cell_alive(pos_x, pos_y)
         elif event.button() == Qt.RightButton:
             self._view.set_cell_dead(pos_x, pos_y)
+        elif event.button() == Qt.MidButton:
+            self._view.panning_activated(pos_x, pos_y)
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent) -> None:
         """
         Logic for the user's mouse movement interaction while inside the board.
-        Delegates to the View the command to change cell's state
+        Delegates to the View the logic to apply based on the button clicked
         Left click ---> draw alive cells
         Right click ---> kill alive cells
+        Mid click ---> Panning the board
         """
         # Convert the widget coordinates into board-matrix indexes
         pos_y = self._board_height * event.y() / self._px_height
@@ -72,6 +76,16 @@ class BoardWidget(QWidget):
                 self._view.set_cell_alive(pos_x, pos_y)
             elif event.buttons() == Qt.RightButton:
                 self._view.set_cell_dead(pos_x, pos_y)
+            elif event.buttons() == Qt.MidButton:
+                self._view.panning(pos_x, pos_y)
+
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+        """ Logic for the user's release click interaction with the board.
+        Delegates to the View the logic to apply based on the button clicked
+        Mid button ---> end panning mode
+        """
+        if event.button() == Qt.MidButton:
+            self._view.panning_deactivated()
 
     def update_board_state(self, board):
         """ Updates the graphic board with the new board passed
