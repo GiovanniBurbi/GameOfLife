@@ -143,6 +143,7 @@ class Model(Observable):
         # Multiply coordinates for max size board (x,y) by the scale ratio
         # between dimensions of the visible board and the max size board.
         # state board and history board have the same dimensions
+        # the division keep in account the not visible part of the board
         visible_state_board = self._get_visible_state_board()
         pos_x = int(y * (visible_state_board.shape[0] / (self._height_max - (self._not_visible_h * 2))))
         pos_y = int(x * (visible_state_board.shape[1] / (self._width_max - (self._not_visible_w * 2))))
@@ -226,7 +227,7 @@ class Model(Observable):
         from where the panning mode has been activated"""
         self._pan_x, self._pan_y = self._adjust_coords(x, y)
         self._panning_mode = True
-        self._panning_board = self._board
+        self._panning_board = np.copy(self._board)
 
     def change_focus(self, x, y):
         """ Method to change the focus of the board. It implements the panning.
@@ -235,21 +236,24 @@ class Model(Observable):
         board = self._panning_board
         pan_x, pan_y = self._adjust_coords(x, y)
         # Don't change if pan coords have not changed
-        if pan_x != self._pan_x or pan_y != self._pan_y:
-            if pan_x - self._pan_x == -1:
-                board = self.translation_x(board, 1)
-            elif pan_x - self._pan_x == 1:
-                board = self.translation_x(board, -1)
-            if pan_y - self._pan_y == -1:
-                board = self.translation_y(board, 1)
-            elif pan_y - self._pan_y == 1:
-                board = self.translation_y(board, -1)
-        # updates actual coords of the panning
-        self._pan_x = pan_x
-        self._pan_y = pan_y
-        # notify new panning board
-        self._panning_board = board
-        self.value = self.visible_board
+        if pan_x != self._pan_x or pan_y != self._pan_x:
+
+            # Based on what changed, shift the board
+            if pan_x - self._pan_x < 0:
+                board = self._translation_x(board, 1)
+            elif pan_x - self._pan_x > 0:
+                board = self._translation_x(board, -1)
+            if pan_y - self._pan_y < 0:
+                board = self._translation_y(board, 1)
+            elif pan_y - self._pan_y > 0:
+                board = self._translation_y(board, -1)
+
+            # updates actual coords of the panning
+            self._pan_x = pan_x
+            self._pan_y = pan_y
+            # notify new panning board
+            self._panning_board = board
+            self.value = self.visible_board
 
     def panning_unset(self):
         """ Method to deactivated panning mode and reset current panning coords to zero.
@@ -260,7 +264,7 @@ class Model(Observable):
         self._board = self._panning_board
         self.value = self.visible_board
 
-    def translation_x(self, board, value):
+    def _translation_x(self, board, value):
         """ Method that translate over axis x the position of living cells """
         dim_x, dim_y = board.shape
         # If there is living cells on the edge of the board
@@ -274,7 +278,7 @@ class Model(Observable):
         # Return the new board with translated/shifted living cells over axis x
         return np.roll(board, value, axis=0)
 
-    def translation_y(self, board, value):
+    def _translation_y(self, board, value):
         """ Method that translate over axis y the position of living cells """
         dim_x, dim_y = board.shape
         # If there is living cells on the edge of the board
