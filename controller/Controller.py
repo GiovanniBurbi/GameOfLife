@@ -78,3 +78,15 @@ class Controller(object):
     def history_switch(self, enabled):
         """ Delegates to the model the activation/deactivation of the history mode """
         self._model.history_mode(enabled)
+
+    def panning_activated(self, x, y):
+        """ Delegates to the model the activation of the panning mode """
+        self._model.set_panning_mode(True, x, y)
+
+    def panning(self, x, y):
+        """ Delegates to the controller the panning of the board """
+        self._model.change_focus(x, y)
+
+    def panning_deactivated(self):
+        """ Delegates to the model the deactivation of the panning mode """
+        self._model.set_panning_mode(False)

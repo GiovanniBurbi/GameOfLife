@@ -1,4 +1,5 @@
-from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QCursor
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene
 
 from view import BoardWidget, Ui_GameOfLife
@@ -6,7 +7,7 @@ from view.utilities import create_grid_over_scene, resize_grid_over_scene
 
 """ Info messages to show in the GUI """
 ENTRY_INFO = "Draw alive cells or Load a pattern before starting the simulation"
-DRAW_INFO = "Left click to set alive cells, Right click to kill alive cells"
+DRAW_INFO = "Left click to set alive cells, right click to kill cells, hold scroll button for panning"
 
 
 class View(QMainWindow):
@@ -157,7 +158,7 @@ class View(QMainWindow):
 
     def pattern_list_style(self):
         """ Method to set the font of the elements in the combo box list """
-        font = QtGui.QFont()
+        font = QFont()
         font.setBold(True)
         font.setPointSize(self._ui.selectPatternBox.font().pointSize())
         pattern_box = self._ui.selectPatternBox
@@ -177,3 +178,23 @@ class View(QMainWindow):
     def history_switch(self, enabled):
         """ Handler change of state of the history radio button"""
         self._controller.history_switch(enabled)
+
+    def panning_activated(self, x, y):
+        """ Delegates to the controller the activation of the panning mode
+         And changes the cursor to an open hand"""
+        self._ui.graphicBoard.viewport().setCursor(QCursor(Qt.OpenHandCursor))
+        self._controller.panning_activated(x, y)
+
+    def panning(self, x, y):
+        """ Delegates to the controller panning of the board """
+        self._controller.panning(x, y)
+
+    def cursor_moved(self):
+        """ Method to change the cursor in a closed hand """
+        self._ui.graphicBoard.viewport().setCursor(QCursor(Qt.ClosedHandCursor))
+
+    def panning_deactivated(self):
+        """ Delegates to the controller the deactivation of the panning mode
+         and changes cursor back to the standard arrow"""
+        self._ui.graphicBoard.viewport().setCursor(QCursor(Qt.ArrowCursor))
+        self._controller.panning_deactivated()
