@@ -27,7 +27,7 @@ class Controller(object):
         self._generation_lifetime = DEFAULT_LIFETIME
 
         # Init list of patterns in the view and then connect events
-        self._view.init_patterns_list(self._model.patterns)
+        self._view.init_patterns_list(self._model.predefinite_patterns)
         self._view.connect_events()
 
         # Register update_board method to receive the updates from the model about the board state
@@ -71,9 +71,9 @@ class Controller(object):
         """ Method that change the current lifetime based on a rate passed as parameter. """
         self._generation_lifetime = DEFAULT_LIFETIME + (rate * AMPLIFIER)
 
-    def selected_pattern(self, pattern, loaded=False):
+    def selected_pattern(self, pattern):
         """ Delegates to the model the load of a pattern """
-        self._model.open_pattern(pattern, loaded)
+        self._model.open_pattern(pattern)
 
     def history_switch(self, enabled):
         """ Delegates to the model the activation/deactivation of the history mode """
