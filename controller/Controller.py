@@ -71,9 +71,9 @@ class Controller(object):
         """ Method that change the current lifetime based on a rate passed as parameter. """
         self._generation_lifetime = DEFAULT_LIFETIME + (rate * AMPLIFIER)
 
-    def selected_pattern(self, pattern):
+    def selected_pattern(self, pattern, loaded=False):
         """ Delegates to the model the load of a pattern """
-        self._model.load_pattern(pattern)
+        self._model.open_pattern(pattern, loaded)
 
     def history_switch(self, enabled):
         """ Delegates to the model the activation/deactivation of the history mode """
