@@ -62,3 +62,8 @@ It's also possible to put RLE files in the **'model/patterns' folder** of this p
 * **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning). **Holding down** the **scroll button** allows the panning of the board according to the movements of the mouse.
 * **Cell history**: The GUI keeps track of **how long each cell has been alive** from the activation of the history mode. It's shown visually by changing the color from **light blue** (newborn) to **dark blue** (ancient).
 
+## Gallery
+
+![](https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/Pulsar.png)
+![](https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/space-rake.png)
+![](https://github.com/GiovanniBurbi/GameOfLife/blob/master/media/images/gosper-glider-gun.png)
