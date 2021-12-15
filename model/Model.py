@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 import numpy as np
@@ -6,6 +7,9 @@ from scipy.ndimage import convolve
 
 from model import Observable
 from model.utilities import pattern_decoder, translation_x, translation_y
+
+""" Extensions of pattern files """
+PATTERN_FILE_EXTENSION = ".rle"
 
 """ Value to use to compute the dimensions of the max visible board """
 NOT_VISIBLE_CONST = 10
@@ -29,14 +33,13 @@ class Model(Observable):
                 Initial state is a zero matrix, meaning all cells are dead.
         height_shift, width_shift: offsets to center board after zoom
         kernel : convolution kernel. To calculate sum of the values of the adjacent cells
-        pattern_location : path to the folder containing the rle files of preset patterns
-        files : pattern files inside the patterns folder
+        files : predefined pattern files paths
         history_mode : flag activation history mode
         pan_x, pan_y : keep track of the position of the mouse in the board while panning
         panning_mode : flag to indicate if the panning mode is active
     """
 
-    def __init__(self, height=60, width=120):
+    def __init__(self, height=64, width=128):
         super().__init__()
         self._width = width
         self._height = height
@@ -53,16 +56,17 @@ class Model(Observable):
         self._kernel = np.array([[1, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 1]])
-        self._patterns_location = os.path.abspath(os.path.dirname(sys.argv[0])) + "/model/patterns/"
-        self._files = sorted([f for f in os.listdir(self._patterns_location)], key=lambda f: f.lower())
+        predefined_patterns_location = os.path.abspath(os.path.dirname(sys.argv[0])) + "/model/patterns/"
+        self._files = sorted([f for f in os.listdir(predefined_patterns_location)], key=lambda f: f.lower())
+        self._files = [predefined_patterns_location + x for x in self._files]
         self._history_mode = False
         self._pan_x = None
         self._pan_y = None
         self._panning_mode = False
 
     @property
-    def patterns(self):
-        """ Method to get the files in the pattern folder """
+    def predefinite_patterns(self):
+        """ Method to get the files path of the files in the pattern folder """
         return self._files
 
     @property
@@ -122,21 +126,31 @@ class Model(Observable):
         self._board = np.zeros((self._height, self._width), np.int8)
         self.value = self.visible_board
 
-    def load_pattern(self, pattern_name):
+    def open_pattern(self, pattern):
         """ Method to load in the board a certain pattern, using
         its name passed as parameter"""
         board = np.zeros((self._height, self._width), np.int8)
-        # Open the requested file in the pattern folder
-        with open(str(self._patterns_location + pattern_name)) as f:
+        # Open file given the path
+        with open(pattern) as f:
             # Pass the pattern file to the pattern decoder function
             pattern_width, pattern_height, pattern_coords = pattern_decoder(f)
+            pattern_name = re.split('[/.]', pattern)[-2]
             offset_x, offset_y = self.compute_offsets(pattern_height, pattern_width, pattern_name)
+            error = False
             for x, y in pattern_coords:
+                if offset_y + y >= self._height or offset_x + x >= self._width:
+                    # Notify subscribers of the code of the error occurred.
+                    # -1 code for error by invalid coords for the boardme Error
+                    error = True
+                    self.error = -1
+                    print(self.error)
+                    break
                 # Set alive the cells specified in the pattern file
                 board[offset_y + y, offset_x + x] = 1
-        # Update boards and notify
-        self._board = board
-        self.value = self.visible_board
+            if not error:
+                # Update boards and notify
+                self._board = board
+                self.value = self.visible_board
 
     def compute_offsets(self, pattern_height, pattern_width, pattern_name):
         """ Method to compute offset of loaded pattern """

@@ -27,11 +27,11 @@ class Controller(object):
         self._generation_lifetime = DEFAULT_LIFETIME
 
         # Init list of patterns in the view and then connect events
-        self._view.init_patterns_list(self._model.patterns)
+        self._view.init_patterns_list(self._model.predefinite_patterns)
         self._view.connect_events()
 
         # Register update_board method to receive the updates from the model about the board state
-        model.register(self.update_board)
+        model.register(self.update_board, self.notify_error)
 
     def add_board_widget_to_ui(self):
         """ Calls view's add board widget method
@@ -73,7 +73,7 @@ class Controller(object):
 
     def selected_pattern(self, pattern):
         """ Delegates to the model the load of a pattern """
-        self._model.load_pattern(pattern)
+        self._model.open_pattern(pattern)
 
     def history_switch(self, enabled):
         """ Delegates to the model the activation/deactivation of the history mode """
@@ -90,3 +90,11 @@ class Controller(object):
     def panning_deactivated(self):
         """ Delegates to the model the deactivation of the panning mode """
         self._model.set_panning_mode(False)
+
+    def notify_error(self, error):
+        """ Delegates to the view the show of the error occurred.
+        Controller has the responsibility to translate the error code
+        into a string to pass to the view for show in the GUI"""
+        # Parsing error code received
+        if error == -1:
+            self._view.show_error("Pattern loaded is too big for the board.\nPlease load another pattern")
