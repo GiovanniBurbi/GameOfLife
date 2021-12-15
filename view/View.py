@@ -1,3 +1,5 @@
+import re
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QCursor
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QFileDialog
@@ -95,7 +97,7 @@ class View(QMainWindow):
         self._ui.clearButton.released.connect(self.clear_board)
         self._ui.playPauseButton.released.connect(self.play_pause)
         self._ui.framerateSlider.valueChanged.connect(self.set_rate)
-        self._ui.selectPatternBox.currentTextChanged.connect(self.choose_pattern)
+        self._ui.selectPatternBox.currentIndexChanged.connect(self.choose_pattern)
         self._ui.historyButton.toggled.connect(self.history_switch)
         self._ui.loadButton.released.connect(self.load_pattern)
 
@@ -137,24 +139,32 @@ class View(QMainWindow):
         variation = self._default_framerate - value
         self._controller.change_rate(variation)
 
-    def choose_pattern(self, pattern):
+    def choose_pattern(self, pattern_index):
         """ Handler of the newly selected option in the combo box, select pattern.
          It stops the simulation if it was running, change the info label to the initial one
          and reset the zoom of the board."""
         self.reset_zoom()
-        if pattern != self._ui.selectPatternBox.model().item(0).text():
+        if pattern_index != 0:
             if not self._info_label_changed:
                 self.change_info_label(DRAW_INFO)
             if self._play_pressed:
                 self.play_pause()
+            # Take the data (path of pattern file) associate
+            # with the item at the given index
+            pattern = self._ui.selectPatternBox.itemData(pattern_index)
             self._controller.selected_pattern(pattern)
 
-    def init_patterns_list(self, patterns):
+    def init_patterns_list(self, patterns_path):
         """ Method to set the list of the combo box and its element's font style """
         pattern_box = self._ui.selectPatternBox
+        # Add info placeholder in combo box
         pattern_box.addItem("------ Select a Pattern -----")
         pattern_box.model().item(0).setEnabled(False)
-        pattern_box.addItems(patterns)
+        for path in patterns_path:
+            # Extract name from file path
+            pattern_name = re.split('[/.]', path)[-2]
+            # Add pattern file path as data of item
+            pattern_box.addItem(pattern_name, path)
         self.pattern_list_style()
 
     def pattern_list_style(self):
@@ -201,13 +211,44 @@ class View(QMainWindow):
         self._controller.panning_deactivated()
 
     def load_pattern(self):
+        """ Handler of press of load button.
+        Pause the simulation if it was running and if select a valid file
+        change info label, load the pattern and add the new pattern in the combo box"""
         if self._play_pressed:
             self.play_pause()
         file_name, filter_selected = QFileDialog.getOpenFileName(self, "Open Pattern File",
                                                                  filter="Rle file (*.rle)",
                                                                  options=QFileDialog.DontUseNativeDialog)
+        # If selected a valid file..
         if file_name:
             self.reset_zoom()
             if not self._info_label_changed:
                 self.change_info_label(DRAW_INFO)
-            self._controller.selected_pattern(file_name, True)
+            self.add_pattern_item(file_name)
+            self._controller.selected_pattern(file_name)
+
+    def add_pattern_item(self, pattern):
+        """ Method to add to the combo box the item (name, path)
+         representing the newly loaded pattern """
+        # Extract pattern name from path without file extension
+        pattern_name = re.split('/', pattern)[-1]
+        pattern_name = ".".join(re.split('[.]', pattern_name)[:-1])
+        pattern_box = self._ui.selectPatternBox
+        # Flag to indicate if the pattern loaded is already listed in
+        # the combo box
+        duplicate = False
+        # Look if this pattern is already in the combo box
+        for i in range(pattern_box.count()):
+            if pattern_box.model().item(i).text() == pattern_name:
+                duplicate = True
+                # set current position in the combo box to the position of the
+                # pattern found in the combo list
+                pattern_box.setCurrentIndex(i)
+                break
+        if not duplicate:
+            # Block pattern box currentIndexChanged signal while
+            # adding a new item and set the current index to the new one
+            pattern_box.blockSignals(True)
+            pattern_box.addItem(pattern_name, pattern)
+            pattern_box.setCurrentIndex(pattern_box.count() - 1)
+            pattern_box.blockSignals(False)
