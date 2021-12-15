@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QCursor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsScene
+from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QFileDialog
 
 from view import BoardWidget, Ui_GameOfLife
 from view.utilities import create_grid_over_scene, resize_grid_over_scene
@@ -95,8 +95,9 @@ class View(QMainWindow):
         self._ui.clearButton.released.connect(self.clear_board)
         self._ui.playPauseButton.released.connect(self.play_pause)
         self._ui.framerateSlider.valueChanged.connect(self.set_rate)
-        self._ui.selectPatternBox.currentTextChanged.connect(self.load_pattern)
+        self._ui.selectPatternBox.currentTextChanged.connect(self.choose_pattern)
         self._ui.historyButton.toggled.connect(self.history_switch)
+        self._ui.loadButton.released.connect(self.load_pattern)
 
     def set_scale(self, value):
         """ Handler of the board resize """
@@ -136,7 +137,7 @@ class View(QMainWindow):
         variation = self._default_framerate - value
         self._controller.change_rate(variation)
 
-    def load_pattern(self, pattern):
+    def choose_pattern(self, pattern):
         """ Handler of the newly selected option in the combo box, select pattern.
          It stops the simulation if it was running, change the info label to the initial one
          and reset the zoom of the board."""
@@ -198,3 +199,15 @@ class View(QMainWindow):
          and changes cursor back to the standard arrow"""
         self._ui.graphicBoard.viewport().setCursor(QCursor(Qt.ArrowCursor))
         self._controller.panning_deactivated()
+
+    def load_pattern(self):
+        if self._play_pressed:
+            self.play_pause()
+        file_name, filter_selected = QFileDialog.getOpenFileName(self, "Open Pattern File",
+                                                                 filter="Rle file (*.rle)",
+                                                                 options=QFileDialog.DontUseNativeDialog)
+        if file_name:
+            self.reset_zoom()
+            if not self._info_label_changed:
+                self.change_info_label(DRAW_INFO)
+            self._controller.selected_pattern(file_name, True)
