@@ -29,6 +29,7 @@ class View(QMainWindow):
         board_px_width, board_px_height : pixel dimensions of the board widget
         play_pressed : flag to inform if the play button has been pressed
         default_framerate : default framerate value
+        pattern_error : flag to indicate that an error has occurred
     """
 
     def __init__(self):
@@ -231,6 +232,7 @@ class View(QMainWindow):
     def add_pattern_item(self, pattern):
         """ Method to add to the combo box the item (name, path)
          representing the newly loaded pattern """
+        # Add element of if it not cause an error
         if not self._pattern_error:
             # Extract pattern name from path without file extension
             pattern_name = re.split('/', pattern)[-1]
@@ -255,8 +257,10 @@ class View(QMainWindow):
                 pattern_box.setCurrentIndex(pattern_box.count() - 1)
                 pattern_box.blockSignals(False)
         else:
+            # reset to False error flag
             self._pattern_error = False
 
     def show_error(self, error_msg):
+        """ Method to show a dialog about the error occurred. """
         self._pattern_error = True
         QMessageBox.about(self, "Pattern Error", error_msg)
