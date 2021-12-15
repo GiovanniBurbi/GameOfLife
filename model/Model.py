@@ -39,7 +39,7 @@ class Model(Observable):
         panning_mode : flag to indicate if the panning mode is active
     """
 
-    def __init__(self, height=60, width=120):
+    def __init__(self, height=64, width=128):
         super().__init__()
         self._width = width
         self._height = height

@@ -151,7 +151,7 @@ class Ui_GameOfLife(object):
         self.zoomSlider.setSizePolicy(sizePolicy)
         self.zoomSlider.setMaximumSize(QtCore.QSize(16777215, 20))
         self.zoomSlider.setMinimum(0)
-        self.zoomSlider.setMaximum(12)
+        self.zoomSlider.setMaximum(16)
         self.zoomSlider.setSingleStep(1)
         self.zoomSlider.setProperty("value", 0)
         self.zoomSlider.setSliderPosition(0)
@@ -210,3 +210,4 @@ class Ui_GameOfLife(object):
         self.clearButton.setText(_translate("GameOfLife", "Clear"))
         self.zoomLabel.setText(_translate("GameOfLife", "Zoom"))
         self.framerateLabel.setText(_translate("GameOfLife", "Framerate"))
+
