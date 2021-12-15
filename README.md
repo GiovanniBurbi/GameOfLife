@@ -46,7 +46,7 @@ The application has been **build** and **tested** with:
   * with Pip: `pip install -r requirements.txt`
   * Use your IDE, it should automatically detect the *requirements.txt* file
 * Run the application:
-  * From command line: `python AppLauncher.py`
+  * From command line: `python3 AppLauncher.py`
   * From IDE: Run *AppLauncher.py* using your IDE running command
 
 ## Features
@@ -61,7 +61,4 @@ The **file format** accepted is [RLE](https://www.conwaylife.com/wiki/Run_Length
 It's also possible to put RLE files in the **'model/patterns' folder** of this project to find the respective patterns in the combo box at the starting of the application.
 * **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning). **Holding down** the **scroll button** allows the panning of the board according to the movements of the mouse.
 * **Cell history**: The GUI keeps track of **how long each cell has been alive** from the activation of the history mode. It's shown visually by changing the color from **light blue** (newborn) to **dark blue** (ancient).
-
-## Demo
-TODO
 
