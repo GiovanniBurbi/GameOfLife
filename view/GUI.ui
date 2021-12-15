@@ -82,7 +82,7 @@
          <item alignment="Qt::AlignRight">
           <widget class="QLabel" name="loadPatternLabel">
            <property name="text">
-            <string>Load Pattern:</string>
+            <string>Patterns:</string>
            </property>
           </widget>
          </item>
@@ -103,19 +103,35 @@
            <property name="font">
             <font>
              <pointsize>12</pointsize>
-             <weight>50</weight>
-             <italic>true</italic>
-             <bold>false</bold>
+                <weight>50</weight>
+                <italic>true</italic>
+                <bold>false</bold>
             </font>
            </property>
-           <property name="editable">
-            <bool>false</bool>
-           </property>
-           <property name="currentText">
-            <string/>
-           </property>
+              <property name="editable">
+                  <bool>false</bool>
+              </property>
+              <property name="currentText">
+                  <string/>
+              </property>
           </widget>
          </item>
+            <item>
+                <widget class="QPushButton" name="loadButton">
+                    <property name="maximumSize">
+                        <size>
+                            <width>45</width>
+                            <height>16777215</height>
+                        </size>
+                    </property>
+                    <property name="locale">
+                        <locale language="Italian" country="Italy"/>
+                    </property>
+                    <property name="text">
+                        <string>Load</string>
+                    </property>
+                </widget>
+            </item>
         </layout>
        </widget>
       </item>

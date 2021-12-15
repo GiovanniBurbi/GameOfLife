@@ -62,6 +62,11 @@ class Ui_GameOfLife(object):
         self.selectPatternBox.setCurrentText("")
         self.selectPatternBox.setObjectName("selectPatternBox")
         self.horizontalLayout.addWidget(self.selectPatternBox)
+        self.loadButton = QtWidgets.QPushButton(self.configurationBox)
+        self.loadButton.setMaximumSize(QtCore.QSize(45, 16777215))
+        self.loadButton.setLocale(QtCore.QLocale(QtCore.QLocale.Italian, QtCore.QLocale.Italy))
+        self.loadButton.setObjectName("loadButton")
+        self.horizontalLayout.addWidget(self.loadButton)
         self.verticalLayout.addWidget(self.configurationBox)
         self.infoLabel = QtWidgets.QLabel(self.centralwidget)
         self.infoLabel.setMaximumSize(QtCore.QSize(16777215, 19))
@@ -196,7 +201,8 @@ class Ui_GameOfLife(object):
         GameOfLife.setWindowTitle(_translate("GameOfLife", "Conway\'s Game of Life"))
         self.configurationBox.setTitle(_translate("GameOfLife", "Configurations"))
         self.historyButton.setText(_translate("GameOfLife", "History"))
-        self.loadPatternLabel.setText(_translate("GameOfLife", "Load Pattern:"))
+        self.loadPatternLabel.setText(_translate("GameOfLife", "Patterns:"))
+        self.loadButton.setText(_translate("GameOfLife", "Load"))
         self.infoLabel.setText(
             _translate("GameOfLife", "Draw alive cells or Load a pattern before starting the simulation"))
         self.controlsBox.setTitle(_translate("GameOfLife", "Controls"))
@@ -204,4 +210,3 @@ class Ui_GameOfLife(object):
         self.clearButton.setText(_translate("GameOfLife", "Clear"))
         self.zoomLabel.setText(_translate("GameOfLife", "Zoom"))
         self.framerateLabel.setText(_translate("GameOfLife", "Framerate"))
-
