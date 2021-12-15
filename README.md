@@ -39,16 +39,29 @@ The application has been **build** and **tested** with:
 * **qimage2ndarray** 1.8.3
 
 ## Run the Application
-TODO
+`docker-compose up`
+* Clone this repository
+* Navigate inside the root directory of the project
+* Install all the dependencies:
+  * with Anaconda: `conda install requirements.txt`
+  * with Pip: `pip install -r requirements.txt`
+  * Use your IDE, it should automatically detect the *requirements.txt* file
+* Run the application:
+  * From command line: `python AppLauncher.py`
+  * From IDE: run *AppLauncher.py* using your IDE running command
 
 ## Features
-* **Start/pause/clear**: The GUI supports controls that allow the user to start and pause the
-simulation, and clear the current state of the board.
-* **Variable framerate**: The GUI supports a control that allows the user to select the framerate at which the simulation is run and animated.
-* **Drawing/editing of state**: The GUI allows the user to draw and edit the state of the board (i.e. fill in or empty oyt occupied locations) with the mouse. **Left click** allows drawing alive cells, **Right click** allows delete filled cells. This feature is available to the user whenever the simulation is paused or running, allowing the user to edit the current state in realtime.
-* **Loading of initial state**: The GUI provides some classic examples of Game of Life Patterns that the user can play with.
+* **Start/pause/clear**: The GUI supports controls that allow the user to **start** and **pause** the
+simulation, and **clear** the current state of the board.
+* **Variable framerate**: The GUI supports a control that allows the user to **select the framerate** at which the simulation is run and animated.
+* **Drawing/editing of state**: The GUI allows the user to **draw and edit** the state of the board (i.e. fill in or empty oyt occupied locations) with the mouse. **Left click** allows drawing alive cells, **Right click** allows delete filled cells. 
+This feature is available to the user **whenever the simulation is paused or running**, allowing the user to edit the current state in realtime.
+* **Loading of initial state**: The GUI provides some **classic examples** of Game of Life Patterns that the user can play with. In addition to this, the GUI supports the **loading** of a serialized version of the board
+state. After the loading of the file you can find the **new pattern** listed in the combo box list.
+The **file format** accepted is [RLE](https://www.conwaylife.com/wiki/Run_Length_Encoded). You can find many patterns in RLE format [here](https://www.conwaylife.com/wiki/Main_Page). **Maximum size** pattern allowed is 64x128.
+It's also possible to put RLE files in the **'model/patterns' folder** of this project to find the respective patterns in the combo box at the starting of the application.
 * **Zooming and panning of board**: The GUI allows the user to select the grid size (zoom) and which part of the grid is currently viewed (panning). **Holding down** the **scroll button** allows the panning of the board according to the movements of the mouse.
-* **Cell history**: The GUI keeps track of how long each cell has been alive from the activation of the history mode. It's shown visually by changing the color from light blue (newborn) to bright red (ancient).
+* **Cell history**: The GUI keeps track of **how long each cell has been alive** from the activation of the history mode. It's shown visually by changing the color from **light blue** (newborn) to **dark blue** (ancient).
 
 ## Demo
 TODO
