@@ -39,7 +39,6 @@ The application has been **build** and **tested** with:
 * **qimage2ndarray** 1.8.3
 
 ## Run the Application
-`docker-compose up`
 * Clone this repository
 * Navigate inside the root directory of the project
 * Install all the dependencies:
@@ -48,7 +47,7 @@ The application has been **build** and **tested** with:
   * Use your IDE, it should automatically detect the *requirements.txt* file
 * Run the application:
   * From command line: `python AppLauncher.py`
-  * From IDE: run *AppLauncher.py* using your IDE running command
+  * From IDE: Run *AppLauncher.py* using your IDE running command
 
 ## Features
 * **Start/pause/clear**: The GUI supports controls that allow the user to **start** and **pause** the
