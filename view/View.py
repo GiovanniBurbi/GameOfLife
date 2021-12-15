@@ -145,8 +145,8 @@ class View(QMainWindow):
         """ Handler of the newly selected option in the combo box, select pattern.
          It stops the simulation if it was running, change the info label to the initial one
          and reset the zoom of the board."""
-        self.reset_zoom()
         if pattern_index != 0:
+            self.reset_zoom()
             if not self._info_label_changed:
                 self.change_info_label(DRAW_INFO)
             if self._play_pressed:

@@ -1,5 +1,5 @@
-from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from view.utilities import matrix_board_conversion
@@ -41,7 +41,7 @@ class BoardWidget(QWidget):
         # Translate matrix in pixmap and set it to the board label
         matrix_board_conversion(self._board_label, board, px_width, px_height)
 
-    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         """
         Logic for the user's click interaction with the board.
         Delegates to the View the logic to apply based on the button clicked
@@ -61,7 +61,7 @@ class BoardWidget(QWidget):
         elif event.button() == Qt.MidButton:
             self._view.panning_activated(pos_x, pos_y)
 
-    def mouseMoveEvent(self, event: QtGui.QMouseEvent) -> None:
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
         """
         Logic for the user's mouse movement interaction while inside the board.
         Delegates to the View the logic to apply based on the button clicked
@@ -83,13 +83,11 @@ class BoardWidget(QWidget):
                 self._view.set_cell_dead(pos_x, pos_y)
                 self._mouse_pos = pos_x, pos_y
             elif event.buttons() == Qt.MidButton:
-
                 # To switch the cursor to a ClosedPalmCursor without delay from sensibility
                 if not self._mouse_shift:
                     # To not call the method every time that the mouse is moved, only at the first movement
                     self._mouse_shift = True
                     self._view.cursor_moved()
-
                 x_variation = pos_x - self._mouse_pos[0]
                 y_variation = pos_y - self._mouse_pos[1]
                 # Update only if the absolute variation is greater than sensibility
@@ -97,7 +95,7 @@ class BoardWidget(QWidget):
                     self._view.panning(pos_x, pos_y)
                     self._mouse_pos = pos_x, pos_y
 
-    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         """ Logic for the user's release click interaction with the board.
         Delegates to the View the logic to apply based on the button clicked
         Mid button ---> end panning mode
@@ -109,4 +107,4 @@ class BoardWidget(QWidget):
     def update_board_state(self, board):
         """ Updates the graphic board with the new board passed
         as a numpy array """
-        matrix_board_conversion(self._board_label, board, self._px_width, self._px_height)
+        matrix_board_conversion(self._board_label, board, self._px_width, self._px_height, palette=1)
