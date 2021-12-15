@@ -2,7 +2,7 @@ import re
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QCursor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
 
 from view import BoardWidget, Ui_GameOfLife
 from view.utilities import create_grid_over_scene, resize_grid_over_scene
@@ -46,6 +46,7 @@ class View(QMainWindow):
         self._ratio = None
         self._play_pressed = False
         self._default_framerate = self._ui.framerateSlider.value()
+        self._pattern_error = False
 
     @property
     def is_play_pressed(self):
@@ -224,31 +225,38 @@ class View(QMainWindow):
             self.reset_zoom()
             if not self._info_label_changed:
                 self.change_info_label(DRAW_INFO)
-            self.add_pattern_item(file_name)
             self._controller.selected_pattern(file_name)
+            self.add_pattern_item(file_name)
 
     def add_pattern_item(self, pattern):
         """ Method to add to the combo box the item (name, path)
          representing the newly loaded pattern """
-        # Extract pattern name from path without file extension
-        pattern_name = re.split('/', pattern)[-1]
-        pattern_name = ".".join(re.split('[.]', pattern_name)[:-1])
-        pattern_box = self._ui.selectPatternBox
-        # Flag to indicate if the pattern loaded is already listed in
-        # the combo box
-        duplicate = False
-        # Look if this pattern is already in the combo box
-        for i in range(pattern_box.count()):
-            if pattern_box.model().item(i).text() == pattern_name:
-                duplicate = True
-                # set current position in the combo box to the position of the
-                # pattern found in the combo list
-                pattern_box.setCurrentIndex(i)
-                break
-        if not duplicate:
-            # Block pattern box currentIndexChanged signal while
-            # adding a new item and set the current index to the new one
-            pattern_box.blockSignals(True)
-            pattern_box.addItem(pattern_name, pattern)
-            pattern_box.setCurrentIndex(pattern_box.count() - 1)
-            pattern_box.blockSignals(False)
+        if not self._pattern_error:
+            # Extract pattern name from path without file extension
+            pattern_name = re.split('/', pattern)[-1]
+            pattern_name = ".".join(re.split('[.]', pattern_name)[:-1])
+            pattern_box = self._ui.selectPatternBox
+            # Flag to indicate if the pattern loaded is already listed in
+            # the combo box
+            duplicate = False
+            # Look if this pattern is already in the combo box
+            for i in range(pattern_box.count()):
+                if pattern_box.model().item(i).text() == pattern_name:
+                    duplicate = True
+                    # set current position in the combo box to the position of the
+                    # pattern found in the combo list
+                    pattern_box.setCurrentIndex(i)
+                    break
+            if not duplicate:
+                # Block pattern box currentIndexChanged signal while
+                # adding a new item and set the current index to the new one
+                pattern_box.blockSignals(True)
+                pattern_box.addItem(pattern_name, pattern)
+                pattern_box.setCurrentIndex(pattern_box.count() - 1)
+                pattern_box.blockSignals(False)
+        else:
+            self._pattern_error = False
+
+    def show_error(self, error_msg):
+        self._pattern_error = True
+        QMessageBox.about(self, "Pattern Error", error_msg)
