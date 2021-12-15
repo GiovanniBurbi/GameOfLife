@@ -136,12 +136,21 @@ class Model(Observable):
             pattern_width, pattern_height, pattern_coords = pattern_decoder(f)
             pattern_name = re.split('[/.]', pattern)[-2]
             offset_x, offset_y = self.compute_offsets(pattern_height, pattern_width, pattern_name)
+            error = False
             for x, y in pattern_coords:
+                if offset_y + y >= self._height or offset_x + x >= self._width:
+                    # Notify subscribers of the code of the error occurred.
+                    # -1 code for error by invalid coords for the boardme Error
+                    error = True
+                    self.error = -1
+                    print(self.error)
+                    break
                 # Set alive the cells specified in the pattern file
                 board[offset_y + y, offset_x + x] = 1
-        # Update boards and notify
-        self._board = board
-        self.value = self.visible_board
+            if not error:
+                # Update boards and notify
+                self._board = board
+                self.value = self.visible_board
 
     def compute_offsets(self, pattern_height, pattern_width, pattern_name):
         """ Method to compute offset of loaded pattern """
