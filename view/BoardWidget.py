@@ -107,4 +107,4 @@ class BoardWidget(QWidget):
     def update_board_state(self, board):
         """ Updates the graphic board with the new board passed
         as a numpy array """
-        matrix_board_conversion(self._board_label, board, self._px_width, self._px_height)
+        matrix_board_conversion(self._board_label, board, self._px_width, self._px_height, palette=1)
